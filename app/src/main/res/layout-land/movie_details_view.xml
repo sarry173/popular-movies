@@ -54,7 +54,7 @@
         android:textAppearance="@style/TextAppearance.AppCompat.Large"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="@+id/movie_details_guideline_50p"
+        app:layout_constraintStart_toEndOf="@+id/movie_details_fav"
         app:layout_constraintTop_toTopOf="parent"
         tools:text="2015" />
 
@@ -85,11 +85,12 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
         android:contentDescription="@string/movie_details_fav_title"
         android:src="@drawable/ic_star"
-        app:layout_constraintEnd_toStartOf="@+id/movie_details_guideline_80p"
-        app:layout_constraintStart_toStartOf="@+id/movie_details_guideline_50p"
-        app:layout_constraintTop_toBottomOf="@id/movie_details_rating" />
+        app:layout_constraintEnd_toEndOf="@+id/movie_details_image"
+        app:layout_constraintStart_toEndOf="@+id/movie_details_image"
+        app:layout_constraintBottom_toBottomOf="@+id/movie_details_image" />
 
     <android.support.constraint.Guideline
         android:id="@+id/movie_details_guideline_80p"

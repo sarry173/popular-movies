@@ -4,7 +4,7 @@
     <string name="error_body_is_null">Response body is null.</string>
     <string name="snackbar_dismiss">Dismiss</string>
     <string name="movie_detail_title">Movie details</string>
-    <string name="movie_details_duration_format">%dmin</string>
+    <string name="movie_details_duration_format">%d min</string>
     <string name="movie_details_fav_title">Mark as favorite</string>
     <string name="movie_details_rating_format">%,.1f/10</string>
     <string name="movie_details_title_org_format">(%s)</string>
