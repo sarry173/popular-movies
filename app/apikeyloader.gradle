@@ -1,0 +1,7 @@
+def properties = new Properties()
+properties.load(project.rootProject.file("local.properties").newDataInputStream())
+ext.THEMOVIEDB_ORG_KEY = properties.getProperty('themoviedb.org.key')
+
+if(null == ext.THEMOVIEDB_ORG_KEY) {
+    throw new GradleException("'themoviedb.org.key=KEY' inside 'local.properties' file is required.")
+}
