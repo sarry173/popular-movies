@@ -18,13 +18,13 @@
         android:layout_height="wrap_content"
         android:background="@color/title_background"
         android:ellipsize="end"
+        android:gravity="center_vertical"
         android:lines="1"
-        android:paddingLeft="4dp"
-        android:paddingRight="4dp"
-        android:textAppearance="@style/TextAppearance.AppCompat.Small.Inverse"
+        android:padding="4dp"
+        android:textAppearance="@style/TextAppearance.AppCompat.Subhead.Inverse"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
         tools:text="The Movie Title" />
 
     <View
