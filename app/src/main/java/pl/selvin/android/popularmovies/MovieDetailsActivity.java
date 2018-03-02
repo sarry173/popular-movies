@@ -49,7 +49,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-import static pl.selvin.android.popularmovies.utils.Constants.IMAGE_BASE_URL_W185;
+import static pl.selvin.android.popularmovies.utils.Constants.IMAGE_BASE_URL_SIZED;
 
 public class MovieDetailsActivity extends AppCompatActivity {
 
@@ -129,8 +129,8 @@ public class MovieDetailsActivity extends AppCompatActivity {
                                 descriptionView.setText(movie.getOverview());
                                 ratingView.setText(getString(R.string.movie_details_rating_format, movie.getVoteAverage()));
                                 Picasso.with(imageView.getContext())
-                                        .load(IMAGE_BASE_URL_W185 + movie.getPosterPath())
-                                        .placeholder(R.drawable.indeterminate_progressbar)
+                                        .load(IMAGE_BASE_URL_SIZED + movie.getPosterPath())
+                                        .placeholder(R.drawable.indeterminate_progress_bar)
                                         .noFade()
                                         .into(imageView, new com.squareup.picasso.Callback() {
                                             @Override

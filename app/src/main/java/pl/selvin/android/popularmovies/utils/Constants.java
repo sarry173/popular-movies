@@ -20,6 +20,6 @@ public interface Constants {
     String API_KEY = BuildConfig.THEMOVIEDB_ORG_KEY;
     String SERVICE_BASE_URL = "http://api.themoviedb.org/3/";
     String IMAGE_BASE_URL = "http://image.tmdb.org/t/p/";
-    String IMAGE_BASE_URL_W185 = IMAGE_BASE_URL + "w185/";
+    String IMAGE_BASE_URL_SIZED = IMAGE_BASE_URL + "w342/";
     String YOUTUBE_BASE_URL  = "https://youtu.be/";
 }

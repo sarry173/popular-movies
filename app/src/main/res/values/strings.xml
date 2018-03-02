@@ -12,5 +12,7 @@
     <string name="movie_details_image_content_description">Movie poster</string>
     <string name="movies_image_loading_progress">Progress indicator</string>
     <string name="videos_list_item_play_video">Play video</string>
+    <string name="movies_list_menu_popular">Popular Movies</string>
+    <string name="movies_list_menu_top_rated">Top rated Movies</string>
 
 </resources>

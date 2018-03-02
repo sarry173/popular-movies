@@ -5,13 +5,22 @@
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
         <item name="list_item_background">@drawable/list_item_background</item>
-
+        <item name="android:progressBarStyleSmall">@style/AppTheme.ProgressBar.Small</item>
+        <item name="android:progressBarStyleLarge">@style/AppTheme.ProgressBar.Large</item>
     </style>
 
     <style name="AppTheme" parent="AppBaseTheme" />
 
     <style name="AppThemeTranslucent" parent="AppBaseTheme">
         <item name="android:windowIsTranslucent">true</item>
+    </style>
+
+    <style name="AppTheme.ProgressBar.Small" parent="android:Widget.ProgressBar.Small">
+        <item name="android:indeterminateDrawable">@drawable/indeterminate_progress_bar_small</item>
+    </style>
+
+    <style name="AppTheme.ProgressBar.Large" parent="android:Widget.ProgressBar.Large">
+        <item name="android:indeterminateDrawable">@drawable/indeterminate_progress_bar</item>
     </style>
 
 </resources>

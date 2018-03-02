@@ -10,9 +10,11 @@
  */
 package pl.selvin.android.popularmovies.viewmodels;
 
+import android.app.Application;
+import android.arch.lifecycle.AndroidViewModel;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
-import android.arch.lifecycle.ViewModel;
+import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
 
 import java.util.List;
@@ -26,7 +28,23 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class MoviesListViewModel extends ViewModel {
+public class MoviesListViewModel extends AndroidViewModel {
+
+    private final static String SETTINGS_KEY = "MOVIES_LIST_SETTINGS";
+    private final static String MOVIES_TO_SHOW = "MOVIES_TO_SHOW";
+    public final static int MOVIES_TO_SHOW_POPULAR = 0;
+    public final static int MOVIES_TO_SHOW_TOP_RATED = 1;
+
+
+    private final SharedPreferences settings;
+
+    private int moviesToShow;
+
+    public MoviesListViewModel(@NonNull Application application) {
+        super(application);
+        settings = application.getSharedPreferences(SETTINGS_KEY, 0);
+        moviesToShow = settings.getInt(MOVIES_TO_SHOW, MOVIES_TO_SHOW_POPULAR);
+    }
 
     public static class MoviesData {
         public final boolean successful;
@@ -42,9 +60,22 @@ public class MoviesListViewModel extends ViewModel {
         }
     }
 
+    public int getMoviesToShow() {
+        return moviesToShow;
+    }
+
+    public void setMoviesToShow(int moviesToShowIn) {
+        if (moviesToShow != moviesToShowIn) {
+            getMoviesInternal().setValue(null);
+            moviesToShow = moviesToShowIn;
+            settings.edit().putInt(MOVIES_TO_SHOW, moviesToShow).apply();
+            loadMovies();
+        }
+    }
+
     private MutableLiveData<MoviesData> movies;
 
-    public LiveData<MoviesData> getMovies() {
+    private MutableLiveData<MoviesData> getMoviesInternal() {
         if (movies == null) {
             movies = new MutableLiveData<>();
             loadMovies();
@@ -52,8 +83,17 @@ public class MoviesListViewModel extends ViewModel {
         return movies;
     }
 
+    public LiveData<MoviesData> getMovies() {
+        return getMoviesInternal();
+    }
+
     private void loadMovies() {
-        MoviesService.Service.getInstance().getPopularMovies(Constants.LANG, null, null).enqueue(new Callback<MoviesResponse>() {
+        final Call<MoviesResponse> moviesResponseCall;
+        if (moviesToShow == MOVIES_TO_SHOW_POPULAR)
+            moviesResponseCall = MoviesService.Service.getInstance().getPopularMovies(Constants.LANG, null, null);
+        else
+            moviesResponseCall = MoviesService.Service.getInstance().getTopRatedMovies(Constants.LANG, null, null);
+        moviesResponseCall.enqueue(new Callback<MoviesResponse>() {
             @Override
             public void onResponse(@NonNull Call<MoviesResponse> call, @NonNull Response<MoviesResponse> response) {
                 if (response.isSuccessful()) {
@@ -75,6 +115,6 @@ public class MoviesListViewModel extends ViewModel {
     }
 
     private void loadFinished(List<Movie> movies, String message, int messageRes) {
-        ((MutableLiveData<MoviesData>) getMovies()).setValue(new MoviesData(message == null && messageRes == -1, movies, message, messageRes));
+        getMoviesInternal().setValue(new MoviesData(message == null && messageRes == -1, movies, message, messageRes));
     }
 }

@@ -28,6 +28,10 @@ public interface MoviesService {
     Call<MoviesResponse> getPopularMovies(@Query("language") String language, @SuppressWarnings("SameParameterValue") @Query("page") Integer page,
                                           @SuppressWarnings("SameParameterValue") @Query("region") String region);
 
+    @GET("movie/top_rated?api_key=" + API_KEY)
+    Call<MoviesResponse> getTopRatedMovies(@Query("language") String language, @SuppressWarnings("SameParameterValue") @Query("page") Integer page,
+                                          @SuppressWarnings("SameParameterValue") @Query("region") String region);
+
     @GET("movie/{movie_id}?api_key=" + API_KEY)
     Call<Movie> getMovie(@Path("movie_id") long id, @Query("language") String language);
 

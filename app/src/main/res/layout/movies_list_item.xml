@@ -48,12 +48,12 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <ImageView
-            android:layout_width="36dp"
-            android:layout_height="36dp"
-            android:layout_gravity="center"
-            android:contentDescription="@string/movies_image_loading_progress"
-            android:src="@drawable/indeterminate_progressbar" />
+        <ProgressBar
+            style="?android:attr/progressBarStyleSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical|center_horizontal"
+            tools:visibility="gone" />
     </FrameLayout>
 
 </android.support.constraint.ConstraintLayout>

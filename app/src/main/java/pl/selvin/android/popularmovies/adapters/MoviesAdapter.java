@@ -32,7 +32,7 @@ import butterknife.OnClick;
 import pl.selvin.android.popularmovies.R;
 import pl.selvin.android.popularmovies.models.Movie;
 
-import static pl.selvin.android.popularmovies.utils.Constants.IMAGE_BASE_URL_W185;
+import static pl.selvin.android.popularmovies.utils.Constants.IMAGE_BASE_URL_SIZED;
 
 public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.Holder> {
     private final List<Movie> mMovies;
@@ -100,8 +100,9 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.Holder> {
             ViewCompat.setTransitionName(title, "title" + getItemId());
             ViewCompat.setTransitionName(image, "image" + getItemId());
             Picasso.with(itemView.getContext())
-                    .load(IMAGE_BASE_URL_W185 + movie.getPosterPath())
+                    .load(IMAGE_BASE_URL_SIZED + movie.getPosterPath())
                     .placeholder(R.drawable.placeholder_background)
+                    .noFade()
                     .into(image, new Callback() {
                         @Override
                         public void onSuccess() {

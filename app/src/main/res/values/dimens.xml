@@ -2,4 +2,6 @@
 <resources>
     <integer name="movies_span_count">2</integer>
     <integer name="videos_span_count">1</integer>
+    <dimen name="content_margin">0dp</dimen>
+    <dimen name="title_padding">16dp</dimen>
 </resources>
