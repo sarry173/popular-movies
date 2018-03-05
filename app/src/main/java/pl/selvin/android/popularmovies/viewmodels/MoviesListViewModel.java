@@ -10,16 +10,22 @@
  */
 package pl.selvin.android.popularmovies.viewmodels;
 
+import android.annotation.SuppressLint;
 import android.app.Application;
 import android.arch.lifecycle.AndroidViewModel;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
+import android.arch.lifecycle.Observer;
 import android.content.SharedPreferences;
+import android.os.AsyncTask;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import java.util.List;
+import java.util.concurrent.atomic.AtomicLong;
 
 import pl.selvin.android.popularmovies.R;
+import pl.selvin.android.popularmovies.data.MoviesDatabase;
 import pl.selvin.android.popularmovies.data.MoviesService;
 import pl.selvin.android.popularmovies.models.Movie;
 import pl.selvin.android.popularmovies.models.MoviesResponse;
@@ -34,16 +40,24 @@ public class MoviesListViewModel extends AndroidViewModel {
     private final static String MOVIES_TO_SHOW = "MOVIES_TO_SHOW";
     public final static int MOVIES_TO_SHOW_POPULAR = 0;
     public final static int MOVIES_TO_SHOW_TOP_RATED = 1;
+    public final static int MOVIES_TO_SHOW_FAVOURITE = 2;
 
 
     private final SharedPreferences settings;
-
+    private final AtomicLong currentRequestId = new AtomicLong(0);
     private int moviesToShow;
 
     public MoviesListViewModel(@NonNull Application application) {
         super(application);
         settings = application.getSharedPreferences(SETTINGS_KEY, 0);
         moviesToShow = settings.getInt(MOVIES_TO_SHOW, MOVIES_TO_SHOW_POPULAR);
+    }
+
+    @Override
+    protected void onCleared() {
+        if (favouriteMovies != null)
+            favouriteMovies.removeObserver(favouriteMoviesObserver);
+        super.onCleared();
     }
 
     public static class MoviesData {
@@ -87,34 +101,59 @@ public class MoviesListViewModel extends AndroidViewModel {
         return getMoviesInternal();
     }
 
-    private void loadMovies() {
-        final Call<MoviesResponse> moviesResponseCall;
-        if (moviesToShow == MOVIES_TO_SHOW_POPULAR)
-            moviesResponseCall = MoviesService.Service.getInstance().getPopularMovies(Constants.LANG, null, null);
-        else
-            moviesResponseCall = MoviesService.Service.getInstance().getTopRatedMovies(Constants.LANG, null, null);
-        moviesResponseCall.enqueue(new Callback<MoviesResponse>() {
-            @Override
-            public void onResponse(@NonNull Call<MoviesResponse> call, @NonNull Response<MoviesResponse> response) {
-                if (response.isSuccessful()) {
-                    final MoviesResponse body = response.body();
-                    if (body != null) {
-                        loadFinished(body.getResults(), null, -1);
-                    } else
-                        loadFinished(null, null, R.string.error_body_is_null);
-                } else
-                    loadFinished(null, null, R.string.error_response_not_successful);
-            }
+    private LiveData<List<Movie>> favouriteMovies;
+    private Observer<List<Movie>> favouriteMoviesObserver = new Observer<List<Movie>>() {
+        @Override
+        public void onChanged(@Nullable List<Movie> movies) {
+            loadFinished(favouriteMovies.getValue(), null, -1, favouriteRequestId);
+        }
+    };
 
-            @Override
-            public void onFailure(@NonNull Call<MoviesResponse> call, @NonNull Throwable throwable) {
-                loadFinished(null, throwable.getMessage(), -1);
-                throwable.printStackTrace();
+    private long favouriteRequestId = -1;
+
+    private void loadMovies() {
+        final long requestId = currentRequestId.addAndGet(1);
+        if (moviesToShow == MOVIES_TO_SHOW_FAVOURITE) {
+            favouriteRequestId = requestId;
+            if (favouriteMovies == null) {
+                favouriteMovies = MoviesDatabase.getInstance(getApplication()).movieDao().getAll();
+                favouriteMovies.observeForever(favouriteMoviesObserver);
+            } else {
+                loadFinished(favouriteMovies.getValue(), null, -1, requestId);
             }
-        });
+        } else {
+            final Call<MoviesResponse> moviesResponseCall;
+            if (moviesToShow == MOVIES_TO_SHOW_POPULAR)
+                moviesResponseCall = MoviesService.Service.getInstance().getPopularMovies(Constants.LANG, null, null);
+            else
+                moviesResponseCall = MoviesService.Service.getInstance().getTopRatedMovies(Constants.LANG, null, null);
+            moviesResponseCall.enqueue(new Callback<MoviesResponse>() {
+                @Override
+                public void onResponse(@NonNull Call<MoviesResponse> call, @NonNull Response<MoviesResponse> response) {
+                    if (response.isSuccessful()) {
+                        final MoviesResponse body = response.body();
+                        if (body != null) {
+                            loadFinished(body.getResults(), null, -1, requestId);
+                        } else
+                            loadFinished(null, null, R.string.error_body_is_null, requestId);
+                    } else
+                        loadFinished(null, null, R.string.error_response_not_successful, requestId);
+                }
+
+                @Override
+                public void onFailure(@NonNull Call<MoviesResponse> call, @NonNull Throwable throwable) {
+                    loadFinished(null, throwable.getMessage(), -1, requestId);
+                    throwable.printStackTrace();
+                }
+            });
+        }
     }
 
-    private void loadFinished(List<Movie> movies, String message, int messageRes) {
-        getMoviesInternal().setValue(new MoviesData(message == null && messageRes == -1, movies, message, messageRes));
+    private void loadFinished(List<Movie> movies, String message, int messageRes, long requestId) {
+        synchronized (currentRequestId) {
+            if (currentRequestId.get() == requestId) {
+                getMoviesInternal().setValue(new MoviesData(message == null && messageRes == -1, movies, message, messageRes));
+            }
+        }
     }
 }

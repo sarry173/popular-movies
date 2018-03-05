@@ -10,49 +10,64 @@
  */
 package pl.selvin.android.popularmovies.models;
 
+import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.Ignore;
+import android.arch.persistence.room.PrimaryKey;
+
 import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
 @SuppressWarnings("unused")
+@Entity(tableName = "movies")
 public class Movie {
+    @PrimaryKey
     @Expose
-    private String poster_path;
+    private int id;
+    @SerializedName("poster_path")
+    @Expose
+    private String posterPath;
     @Expose
     private Boolean adult;
     @Expose
     private String overview;
     @Expose
-    private String release_date;
+    @SerializedName("release_date")
+    private String releaseDate;
+    @Ignore
     @Expose
     private List<Integer> genre_ids;
     @Expose
-    private int id;
+    @SerializedName("original_title")
+    private String originalTitle;
     @Expose
-    private String original_title;
-    @Expose
-    private String original_language;
+    @SerializedName("original_language")
+    private String originalLanguage;
     @Expose
     private String title;
     @Expose
-    private String backdrop_path;
+    @SerializedName("backdrop_path")
+    private String backdropPath;
     @Expose
     private double popularity;
     @Expose
-    private int vote_count;
+    @SerializedName("vote_count")
+    private int voteCount;
     @Expose
     private Boolean video;
     @Expose
-    private double vote_average;
+    @SerializedName("vote_average")
+    private double voteAverage;
     @Expose
     private Integer runtime;
 
     public String getOriginalTitle() {
-        return original_title;
+        return originalTitle;
     }
 
     public String getOriginalLanguage() {
-        return original_language;
+        return originalLanguage;
     }
 
     public String getTitle() {
@@ -60,7 +75,7 @@ public class Movie {
     }
 
     public String getBackdropPath() {
-        return backdrop_path;
+        return backdropPath;
     }
 
     public double getPopularity() {
@@ -68,7 +83,7 @@ public class Movie {
     }
 
     public int getVoteCount() {
-        return vote_count;
+        return voteCount;
     }
 
     public Boolean hasVideo() {
@@ -76,11 +91,11 @@ public class Movie {
     }
 
     public double getVoteAverage() {
-        return vote_average;
+        return voteAverage;
     }
 
     public String getPosterPath() {
-        return poster_path;
+        return posterPath;
     }
 
     public Boolean isAdult() {
@@ -92,7 +107,7 @@ public class Movie {
     }
 
     public String getReleaseDate() {
-        return release_date;
+        return releaseDate;
     }
 
     public List<Integer> getGenreIds() {
@@ -105,5 +120,65 @@ public class Movie {
 
     public Integer getRuntime() {
         return runtime;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public void setPosterPath(String posterPath) {
+        this.posterPath = posterPath;
+    }
+
+    public void setAdult(Boolean adult) {
+        this.adult = adult;
+    }
+
+    public void setOverview(String overview) {
+        this.overview = overview;
+    }
+
+    public void setReleaseDate(String releaseDate) {
+        this.releaseDate = releaseDate;
+    }
+
+    public void setGenre_ids(List<Integer> genre_ids) {
+        this.genre_ids = genre_ids;
+    }
+
+    public void setOriginalTitle(String originalTitle) {
+        this.originalTitle = originalTitle;
+    }
+
+    public void setOriginalLanguage(String originalLanguage) {
+        this.originalLanguage = originalLanguage;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public void setBackdropPath(String backdropPath) {
+        this.backdropPath = backdropPath;
+    }
+
+    public void setPopularity(double popularity) {
+        this.popularity = popularity;
+    }
+
+    public void setVoteCount(int voteCount) {
+        this.voteCount = voteCount;
+    }
+
+    public void setVideo(Boolean video) {
+        this.video = video;
+    }
+
+    public void setVoteAverage(double voteAverage) {
+        this.voteAverage = voteAverage;
+    }
+
+    public void setRuntime(Integer runtime) {
+        this.runtime = runtime;
     }
 }

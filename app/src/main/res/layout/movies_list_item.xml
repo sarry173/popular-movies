@@ -39,21 +39,15 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <FrameLayout
+    <ProgressBar
         android:id="@+id/movies_list_item_progress"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
+        style="?android:attr/progressBarStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
-        <ProgressBar
-            style="?android:attr/progressBarStyleSmall"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical|center_horizontal"
-            tools:visibility="gone" />
-    </FrameLayout>
+        app:layout_constraintTop_toTopOf="parent"
+        tools:visibility="gone" />
 
 </android.support.constraint.ConstraintLayout>

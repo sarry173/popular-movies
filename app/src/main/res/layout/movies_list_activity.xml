@@ -11,13 +11,20 @@
         android:layout_height="match_parent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
-    <ProgressBar
+    <FrameLayout
         android:id="@+id/movies_list_activity_progress"
-        style="?android:attr/progressBarStyleLarge"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_vertical|center_horizontal"
-        tools:visibility="visible" />
+        android:background="@color/semi_transparent_white"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <ProgressBar
+
+            style="?android:attr/progressBarStyleLarge"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical|center_horizontal"
+            tools:visibility="visible" />
+
+    </FrameLayout>
 
 
     <android.support.design.widget.AppBarLayout

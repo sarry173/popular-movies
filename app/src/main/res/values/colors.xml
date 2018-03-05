@@ -6,4 +6,5 @@
     <color name="title_background">#df78909C</color>
     <color name="ic_launcher_background">#78909C</color>
     <color name="colorAccentA30">#4C78909C</color>
+    <color name="semi_transparent_white">#1cffffff</color>
 </resources>

@@ -11,16 +11,25 @@
 
 package pl.selvin.android.popularmovies;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.arch.lifecycle.Observer;
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
+import android.database.sqlite.SQLiteConstraintException;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.ActivityOptionsCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.util.Pair;
 import android.support.v4.view.ViewCompat;
+import android.support.v4.widget.ImageViewCompat;
+import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
@@ -28,7 +37,6 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -38,13 +46,16 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import pl.selvin.android.popularmovies.adapters.MoviesAdapter;
 import pl.selvin.android.popularmovies.adapters.VideosAdapter;
+import pl.selvin.android.popularmovies.data.MoviesDatabase;
 import pl.selvin.android.popularmovies.data.MoviesService;
 import pl.selvin.android.popularmovies.models.Movie;
 import pl.selvin.android.popularmovies.models.Video;
 import pl.selvin.android.popularmovies.models.VideosResponse;
 import pl.selvin.android.popularmovies.utils.Constants;
+import pl.selvin.android.popularmovies.viewmodels.MovieDetailsViewModel;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -55,18 +66,32 @@ public class MovieDetailsActivity extends AppCompatActivity {
 
     private static final String MOVIE_ID = "MOVIE_ID";
     public static final String POSITION = "POSITION";
+    public static final String FROM_FAVOURITE = "FROM_FAVOURITE";
+    private final View.OnClickListener dismissOnClick = new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            finish();
+        }
+    };
 
     @SuppressWarnings("unchecked")
-    public static void startDetailsActivity(@NonNull Activity context, MoviesAdapter.Holder holder) {
+    public static void startDetailsActivityForResult(@NonNull Activity context, boolean fromFavourite, MoviesAdapter.Holder holder, View progress, int code) {
         final long movieId = holder.getItemId();
         final int position = holder.getAdapterPosition();
+        ViewCompat.setTransitionName(progress, "progress" + movieId);
         final ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(context,
                 Pair.<View, String>create(holder.image, "image" + movieId),
-                Pair.<View, String>create(holder.title, "title" + movieId));
-        ActivityCompat.startActivity(context, new Intent(context, MovieDetailsActivity.class)
-                .putExtra(MOVIE_ID, movieId).putExtra(POSITION, position), options.toBundle());
+                Pair.<View, String>create(holder.title, "title" + movieId),
+                Pair.create(progress, "progress" + movieId));
+        ActivityCompat.startActivityForResult(context, new Intent(context, MovieDetailsActivity.class)
+                .putExtra(MOVIE_ID, movieId).putExtra(POSITION, position).putExtra(FROM_FAVOURITE, fromFavourite), code, options.toBundle());
     }
 
+    private MovieDetailsViewModel model;
+    private Movie movie = null;
+
+    @BindView(R.id.movie_details_request_focus)
+    View requestFocusView;
     @BindView(R.id.movie_details_title)
     TextView titleView;
     @BindView(R.id.movie_details_title_org)
@@ -87,36 +112,84 @@ public class MovieDetailsActivity extends AppCompatActivity {
     RecyclerView videosView;
     @BindView(R.id.movie_details_videos_title)
     TextView videosTitleView;
-    @BindView(R.id.movie_details_progress)
-    FrameLayout progress;
+    @BindView(R.id.movie_details_image_progress)
+    View imageProgress;
     @BindView(R.id.movie_details_fav)
     FloatingActionButton favourite;
+    @BindView(R.id.toolbar)
+    Toolbar toolbar;
+    @BindView(R.id.scroll)
+    NestedScrollView scroll;
+    @BindView(R.id.movie_details_activity_progress)
+    View progress;
+
+    @SuppressLint("StaticFieldLeak")
+    @OnClick(R.id.movie_details_fav)
+    void favOnClick(View view) {
+        if (movie != null) {
+            new AsyncTask<Void, Void, Void>() {
+                @Override
+                protected Void doInBackground(Void... voids) {
+                    final MoviesDatabase.MovieDao movieDao = MoviesDatabase.getInstance(getApplication()).movieDao();
+                    try {
+                        movieDao.insert(movie);
+                    } catch (SQLiteConstraintException exception) {
+                        movieDao.delete(movie);
+                    }
+                    return null;
+                }
+            }.execute();
+
+        }
+    }
 
     @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
+    public void onCreate(@Nullable final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.movie_details_activity);
-        supportPostponeEnterTransition();
+        if (savedInstanceState == null)
+            supportPostponeEnterTransition();
         ButterKnife.bind(this);
+        setSupportActionBar(toolbar);
+        final ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null)
+            actionBar.setDisplayHomeAsUpEnabled(true);
         final Intent intent = getIntent();
         videosView.setNestedScrollingEnabled(false);
         if (intent != null) {
             final long id = intent.getLongExtra(MOVIE_ID, -1);
             ViewCompat.setTransitionName(imageView, "image" + id);
             ViewCompat.setTransitionName(titleView, "title" + id);
+            ViewCompat.setTransitionName(progress, "progress" + id);
             if (id != -1) {
-                setSupportActionBar(this.<Toolbar>findViewById(R.id.toolbar));
-                final ActionBar actionBar = getSupportActionBar();
-                if (actionBar != null)
-                    actionBar.setDisplayHomeAsUpEnabled(true);
+                new AsyncTask<Void, Void, Void>() {
+
+                    @Override
+                    protected Void doInBackground(Void... voids) {
+                        MoviesDatabase.getInstance(getApplication()).movieDao().count(id).observe(MovieDetailsActivity.this, new Observer<Integer>() {
+                            @Override
+                            public void onChanged(@Nullable Integer count) {
+                                if (count != null && count > 0) {
+                                    ImageViewCompat.setImageTintList(favourite, ContextCompat.getColorStateList(MovieDetailsActivity.this, R.color.colorPrimary));
+                                } else {
+                                    ImageViewCompat.setImageTintList(favourite, ContextCompat.getColorStateList(MovieDetailsActivity.this, android.R.color.white));
+                                }
+                            }
+                        });
+                        return null;
+                    }
+                }.execute();
+
                 setTitle(R.string.movie_detail_title);
                 progress.setVisibility(View.VISIBLE);
-                MoviesService.Service.getInstance().getMovie(id, Constants.LANG).enqueue(new Callback<Movie>() {
+                imageProgress.setVisibility(View.VISIBLE);
+                model = ViewModelProviders.of(this).get(MovieDetailsViewModel.class);
+                model.getMovie(id, intent.getBooleanExtra(FROM_FAVOURITE, false)).observe(this, new Observer<MovieDetailsViewModel.MovieData>() {
                     @Override
-                    public void onResponse(@NonNull Call<Movie> call, @NonNull Response<Movie> response) {
-                        if (response.isSuccessful()) {
-                            final Movie movie = response.body();
-                            if (movie != null) {
+                    public void onChanged(@Nullable MovieDetailsViewModel.MovieData movieData) {
+                        if (movieData != null) {
+                            if (movieData.successful) {
+                                movie = movieData.movie;
                                 titleView.setText(movie.getTitle());
                                 if (!movie.getTitle().equals(movie.getOriginalTitle())) {
                                     titleOrgView.setText(getString(R.string.movie_details_title_org_format, movie.getOriginalTitle()));
@@ -128,6 +201,7 @@ public class MovieDetailsActivity extends AppCompatActivity {
                                 durationView.setText(getString(R.string.movie_details_duration_format, movie.getRuntime()));
                                 descriptionView.setText(movie.getOverview());
                                 ratingView.setText(getString(R.string.movie_details_rating_format, movie.getVoteAverage()));
+                                progress.setVisibility(View.GONE);
                                 Picasso.with(imageView.getContext())
                                         .load(IMAGE_BASE_URL_SIZED + movie.getPosterPath())
                                         .placeholder(R.drawable.indeterminate_progress_bar)
@@ -135,14 +209,16 @@ public class MovieDetailsActivity extends AppCompatActivity {
                                         .into(imageView, new com.squareup.picasso.Callback() {
                                             @Override
                                             public void onSuccess() {
-                                                progress.setVisibility(View.GONE);
-                                                supportStartPostponedEnterTransition();
+                                                imageProgress.setVisibility(View.GONE);
+                                                if (savedInstanceState == null)
+                                                    supportStartPostponedEnterTransition();
                                             }
 
                                             @Override
                                             public void onError() {
-                                                progress.setVisibility(View.GONE);
-                                                supportStartPostponedEnterTransition();
+                                                imageProgress.setVisibility(View.GONE);
+                                                if (savedInstanceState == null)
+                                                    supportStartPostponedEnterTransition();
                                             }
                                         });
                                 videosView.setLayoutManager(new GridLayoutManager(MovieDetailsActivity.this, getResources().getInteger(R.integer.videos_span_count)));
@@ -161,19 +237,22 @@ public class MovieDetailsActivity extends AppCompatActivity {
                                                 }
                                             }
                                         }
+                                        scroll.scrollTo(0, 0);
                                     }
 
                                     @Override
                                     public void onFailure(@NonNull Call<VideosResponse> call, @NonNull Throwable throwable) {
                                     }
                                 });
+                            } else {
+                                final Snackbar snackBar;
+                                if (movieData.errorRes == -1)
+                                    snackBar = Snackbar.make(findViewById(android.R.id.content), movieData.errorString, Snackbar.LENGTH_INDEFINITE);
+                                else
+                                    snackBar = Snackbar.make(findViewById(android.R.id.content), movieData.errorRes, Snackbar.LENGTH_INDEFINITE);
+                                snackBar.setAction(R.string.snackbar_dismiss, dismissOnClick).show();
                             }
                         }
-                    }
-
-                    @Override
-                    public void onFailure(@NonNull Call<Movie> call, @NonNull Throwable throwable) {
-
                     }
                 });
                 return;

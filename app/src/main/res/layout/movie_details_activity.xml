@@ -6,6 +6,7 @@
     android:layout_height="match_parent">
 
     <android.support.v4.widget.NestedScrollView
+        android:id="@+id/scroll"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginLeft="@dimen/content_margin"
@@ -13,9 +14,23 @@
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <include layout="@layout/movie_details_view" />
-
     </android.support.v4.widget.NestedScrollView>
 
+    <FrameLayout
+        android:id="@+id/movie_details_activity_progress"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/semi_transparent_white">
+
+        <ProgressBar
+
+            style="?android:attr/progressBarStyleLarge"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical|center_horizontal"
+            tools:visibility="visible" />
+
+    </FrameLayout>
 
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
@@ -33,22 +48,22 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/colorAccent"
-            android:paddingRight="@dimen/title_padding"
-            android:paddingLeft="@dimen/title_padding"
-            android:paddingTop="16dp"
             android:lines="1"
-            app:autoSizeTextType="uniform"
+            android:paddingLeft="@dimen/title_padding"
+            android:paddingRight="@dimen/title_padding"
+            android:paddingTop="16dp"
             android:textAppearance="@style/TextAppearance.AppCompat.Headline"
             android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
             tools:text="The Movie Title" />
+
         <TextView
             android:id="@+id/movie_details_title_org"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/colorAccent"
             android:paddingBottom="16dp"
-            android:paddingRight="@dimen/title_padding"
             android:paddingLeft="@dimen/title_padding"
+            android:paddingRight="@dimen/title_padding"
             android:textAppearance="@style/TextAppearance.AppCompat.Small"
             android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
             tools:text="The Movie Title" />

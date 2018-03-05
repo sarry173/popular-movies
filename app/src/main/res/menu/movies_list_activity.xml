@@ -7,5 +7,9 @@
         <item
             android:id="@+id/movies_list_menu_top_rated"
             android:title="@string/movies_list_menu_top_rated"/>
+        <item
+            android:id="@+id/movies_list_menu_favourite"
+            android:title="@string/movies_list_menu_favourite"/>
+
     </group>
 </menu>

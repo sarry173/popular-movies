@@ -7,12 +7,14 @@
     <string name="movie_details_duration_format">%d min</string>
     <string name="movie_details_fav_title">Mark as favorite</string>
     <string name="movie_details_rating_format">%,.1f/10</string>
+    <string name="movie_details_rating_simple_format">%,.1f</string>
     <string name="movie_details_title_org_format">(%s)</string>
     <string name="movie_details_videos_title">Videos:</string>
     <string name="movie_details_image_content_description">Movie poster</string>
     <string name="movies_image_loading_progress">Progress indicator</string>
     <string name="videos_list_item_play_video">Play video</string>
-    <string name="movies_list_menu_popular">Popular Movies</string>
-    <string name="movies_list_menu_top_rated">Top rated Movies</string>
+    <string name="movies_list_menu_popular">Popular movies</string>
+    <string name="movies_list_menu_top_rated">Top rated movies</string>
+    <string name="movies_list_menu_favourite">Favourite movies</string>
 
 </resources>

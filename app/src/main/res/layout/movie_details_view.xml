@@ -5,6 +5,13 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
+    <View
+        android:id="@+id/movie_details_request_focus"
+        android:layout_width="1dp"
+        android:layout_height="1dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <ImageView
         android:id="@+id/movie_details_image"
         android:layout_width="0dp"
@@ -20,22 +27,18 @@
         app:layout_constraintTop_toTopOf="parent"
         tools:src="@drawable/placeholder_background" />
 
-    <FrameLayout
-        android:id="@+id/movie_details_progress"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
+
+    <ProgressBar
+        android:id="@+id/movie_details_image_progress"
+        style="?android:attr/progressBarStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical|center_horizontal"
         app:layout_constraintBottom_toBottomOf="@+id/movie_details_image"
         app:layout_constraintEnd_toEndOf="@+id/movie_details_image"
         app:layout_constraintStart_toStartOf="@+id/movie_details_image"
-        app:layout_constraintTop_toTopOf="@+id/movie_details_image">
-
-        <ProgressBar
-            style="?android:attr/progressBarStyleSmall"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical|center_horizontal"
-            tools:visibility="gone" />
-    </FrameLayout>
+        app:layout_constraintTop_toTopOf="@+id/movie_details_image"
+        tools:visibility="gone" />
 
     <android.support.constraint.Guideline
         android:id="@+id/movie_details_guideline_50p"
@@ -91,8 +94,8 @@
         android:contentDescription="@string/movie_details_fav_title"
         android:focusable="true"
         android:src="@drawable/ic_star"
-        app:layout_constraintTop_toBottomOf="@+id/movie_details_rating"
-        app:layout_constraintStart_toEndOf="@+id/movie_details_guideline_50p" />
+        app:layout_constraintStart_toEndOf="@+id/movie_details_guideline_50p"
+        app:layout_constraintTop_toBottomOf="@+id/movie_details_rating" />
 
     <TextView
         android:id="@+id/movie_details_description"

@@ -15,8 +15,8 @@ import java.util.Locale;
 import pl.selvin.android.popularmovies.BuildConfig;
 
 public interface Constants {
-    String LANG = Locale.getDefault().getLanguage();
-    //String LANG = Locale.ENGLISH.getLanguage();
+    //String LANG = Locale.getDefault().getLanguage();
+    String LANG = Locale.ENGLISH.getLanguage();
     String API_KEY = BuildConfig.THEMOVIEDB_ORG_KEY;
     String SERVICE_BASE_URL = "http://api.themoviedb.org/3/";
     String IMAGE_BASE_URL = "http://image.tmdb.org/t/p/";

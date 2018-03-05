@@ -5,6 +5,10 @@ android {
     compileSdkVersion 27
     buildToolsVersion '27.0.0'
 
+    signingConfigs {
+        release
+    }
+
     defaultConfig {
         applicationId "pl.selvin.android.popularmovies"
         minSdkVersion 14
@@ -18,10 +22,13 @@ android {
         release {
             shrinkResources true
             minifyEnabled true
+            signingConfig signingConfigs.release
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
 }
+
+apply from: 'signing.gradle'
 
 def supportVersion = '27.1.0'
 
@@ -48,4 +55,7 @@ dependencies {
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.8.1'
     //@Nullable - proguard!
     implementation 'com.google.code.findbugs:jsr305:3.0.2'
+    //room db
+    implementation "android.arch.persistence.room:runtime:1.0.0"
+    annotationProcessor "android.arch.persistence.room:compiler:1.0.0"
 }

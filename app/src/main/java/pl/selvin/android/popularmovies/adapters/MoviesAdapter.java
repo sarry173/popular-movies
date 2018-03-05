@@ -86,7 +86,7 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.Holder> {
         @BindView(R.id.movies_list_item_title)
         public TextView title;
         @BindView(R.id.movies_list_item_progress)
-        FrameLayout progress;
+        View progress;
 
         Holder(View itemView, @NonNull ViewHolderListener listener) {
             super(itemView);
