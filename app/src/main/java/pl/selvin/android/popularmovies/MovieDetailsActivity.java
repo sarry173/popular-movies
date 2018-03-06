@@ -51,7 +51,7 @@ import static pl.selvin.android.popularmovies.utils.Constants.IMAGE_BASE_URL_SIZ
 public class MovieDetailsActivity extends AppCompatActivity {
 
     private static final String MOVIE_ID = "MOVIE_ID";
-    public static final String POSITION = "POSITION";
+    private static final String POSITION = "POSITION";
 
     @SuppressWarnings("unchecked")
     public static void startDetailsActivityForResult(@NonNull Activity context, MoviesAdapter.Holder holder, int code) {

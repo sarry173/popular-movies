@@ -163,9 +163,4 @@ public class MoviesListActivity extends AppCompatActivity implements MoviesAdapt
     public void onItemClick(MoviesAdapter.Holder holder) {
         MovieDetailsActivity.startDetailsActivityForResult(this, holder, SHOW_DETAILS);
     }
-
-    @Override
-    public void onLoadCompleted(int position) {
-
-    }
 }

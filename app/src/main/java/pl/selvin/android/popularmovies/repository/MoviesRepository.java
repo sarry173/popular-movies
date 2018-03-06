@@ -30,8 +30,14 @@ import pl.selvin.android.popularmovies.models.MovieDetails;
 import pl.selvin.android.popularmovies.models.MovieWithDetails;
 import pl.selvin.android.popularmovies.models.Resource;
 import pl.selvin.android.popularmovies.utils.AppExecutors;
+import pl.selvin.android.popularmovies.utils.LiveDataCallAdapterFactory;
 import pl.selvin.android.popularmovies.utils.RateLimiter;
 import pl.selvin.android.popularmovies.viewmodels.MoviesListViewModel.MoviesToShow;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
+
+import static pl.selvin.android.popularmovies.utils.Constants.LANG;
+import static pl.selvin.android.popularmovies.utils.Constants.SERVICE_BASE_URL;
 
 public class MoviesRepository {
     private static final String SETTINGS_KEY = "MOVIES_LIST_SETTINGS";
@@ -41,7 +47,8 @@ public class MoviesRepository {
     private final SharedPreferences settings;
     private final AppExecutors appExecutors;
     private final MoviesDatabase.MovieDao movieDao;
-    private RateLimiter<String> listRateLimit = new RateLimiter<>(10, TimeUnit.MINUTES);
+    private final RateLimiter<String> listRateLimit = new RateLimiter<>(10, TimeUnit.MINUTES);
+    private final MoviesService moviesService;
 
     private MoviesRepository(Context context) {
         final MoviesDatabase database = Room.databaseBuilder(context.getApplicationContext(), MoviesDatabase.class, "movies")
@@ -49,6 +56,9 @@ public class MoviesRepository {
         settings = context.getSharedPreferences(SETTINGS_KEY, 0);
         appExecutors = AppExecutors.INSTANCE;
         movieDao = database.movieDao();
+        moviesService = new Retrofit.Builder().addConverterFactory(GsonConverterFactory.create())
+                .addCallAdapterFactory(new LiveDataCallAdapterFactory())
+                .baseUrl(SERVICE_BASE_URL).build().create(MoviesService.class);
     }
 
     public LiveData<Resource<List<Movie>>> loadPopularMovies() {
@@ -75,7 +85,7 @@ public class MoviesRepository {
             @NonNull
             @Override
             protected LiveData<ApiResponse<MoviesServiceResponse<Movie>>> createCall() {
-                return MoviesService.INSTANCE.getPopularMovies(null, null, null);
+                return moviesService.getPopularMovies(LANG, null, null);
             }
 
             @Override
@@ -108,7 +118,7 @@ public class MoviesRepository {
             @NonNull
             @Override
             protected LiveData<ApiResponse<MoviesServiceResponse<Movie>>> createCall() {
-                return MoviesService.INSTANCE.getTopRatedMovies(null, null, null);
+                return moviesService.getTopRatedMovies(LANG, null, null);
             }
 
             @Override
@@ -180,7 +190,7 @@ public class MoviesRepository {
             @NonNull
             @Override
             protected LiveData<ApiResponse<MovieDetails>> createCall() {
-                return MoviesService.INSTANCE.getMovieDetails(id, null);
+                return moviesService.getMovieDetails(id, LANG);
             }
 
             protected void onFetchFailed() {
@@ -210,7 +220,7 @@ public class MoviesRepository {
         return settings.getBoolean(SHOW_BOTTOM_NAVIGATION, true);
     }
 
-    public boolean setShowBottomNavigation(boolean value) {
-        return settings.edit().putBoolean(SHOW_BOTTOM_NAVIGATION, value).commit();
+    public void setShowBottomNavigation(boolean value) {
+        settings.edit().putBoolean(SHOW_BOTTOM_NAVIGATION, value).apply();
     }
 }

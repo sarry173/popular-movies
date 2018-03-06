@@ -25,9 +25,9 @@ import android.support.annotation.Nullable;
 import android.support.annotation.WorkerThread;
 
 import pl.selvin.android.popularmovies.api.ApiResponse;
+import pl.selvin.android.popularmovies.models.Resource;
 import pl.selvin.android.popularmovies.utils.AppExecutors;
 import pl.selvin.android.popularmovies.utils.Objects;
-import pl.selvin.android.popularmovies.models.Resource;
 
 /**
  * A generic class that can provide a resource backed by both the sqlite database and the network.
@@ -38,6 +38,7 @@ import pl.selvin.android.popularmovies.models.Resource;
  * @param <ResultType>
  * @param <RequestType>
  */
+@SuppressWarnings("WeakerAccess")
 public abstract class NetworkBoundResource<ResultType, RequestType> {
     private final AppExecutors appExecutors;
 

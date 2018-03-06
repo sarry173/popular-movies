@@ -80,8 +80,6 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.Holder> {
 
     public interface ViewHolderListener {
         void onItemClick(Holder holder);
-
-        void onLoadCompleted(int position);
     }
 
     public static class Holder extends RecyclerView.ViewHolder {
@@ -111,13 +109,11 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.Holder> {
                         @Override
                         public void onSuccess() {
                             progress.setVisibility(View.GONE);
-                            mListener.onLoadCompleted(getAdapterPosition());
                         }
 
                         @Override
                         public void onError() {
                             progress.setVisibility(View.GONE);
-                            mListener.onLoadCompleted(getAdapterPosition());
                         }
                     });
         }

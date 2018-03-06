@@ -36,6 +36,7 @@ import android.view.ViewGroup;
 import android.view.animation.Interpolator;
 
 
+@SuppressWarnings("unused")
 public final class BottomNavigationBehavior<V extends View> extends VerticalScrollingBehavior<V> {
     private static final Interpolator INTERPOLATOR = new LinearOutSlowInInterpolator();
     private final BottomNavigationWithSnackbar mWithSnackBarImpl = Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP ? new LollipopBottomNavWithSnackBarImpl() : new PreLollipopBottomNavWithSnackBarImpl();
@@ -48,8 +49,6 @@ public final class BottomNavigationBehavior<V extends View> extends VerticalScro
     private int mSnackbarHeight = -1;
     private boolean scrollingEnabled = true;
     private boolean hideAlongSnackbar = false;
-    int[] attrsArray = new int[]{
-            android.R.attr.id};
 
     public BottomNavigationBehavior() {
         super();
@@ -57,6 +56,8 @@ public final class BottomNavigationBehavior<V extends View> extends VerticalScro
 
     public BottomNavigationBehavior(Context context, AttributeSet attrs) {
         super(context, attrs);
+        int[] attrsArray = new int[]{
+                android.R.attr.id};
         TypedArray a = context.obtainStyledAttributes(attrs,
                 attrsArray);
         mTabLayoutId = a.getResourceId(0, View.NO_ID);
@@ -74,6 +75,7 @@ public final class BottomNavigationBehavior<V extends View> extends VerticalScro
             throw new IllegalArgumentException(
                     "The view is not associated with BottomNavigationBehavior");
         }
+        //noinspection unchecked
         return (BottomNavigationBehavior<V>) behavior;
     }
 
@@ -92,8 +94,8 @@ public final class BottomNavigationBehavior<V extends View> extends VerticalScro
     private void updateScrollingForSnackbar(View dependency, V child, boolean enabled) {
         if (!isTablet && dependency instanceof Snackbar.SnackbarLayout) {
             scrollingEnabled = enabled;
-            if (!hideAlongSnackbar && ViewCompat.getTranslationY(child) != 0) {
-                ViewCompat.setTranslationY(child, 0);
+            if (!hideAlongSnackbar && child.getTranslationY() != 0) {
+                child.setTranslationY(0);
                 hidden = false;
                 hideAlongSnackbar = true;
             } else if (hideAlongSnackbar) {

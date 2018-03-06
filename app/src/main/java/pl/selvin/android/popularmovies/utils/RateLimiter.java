@@ -16,16 +16,16 @@
 
 package pl.selvin.android.popularmovies.utils;
 
-        import android.os.SystemClock;
-        import android.support.v4.util.ArrayMap;
+import android.os.SystemClock;
+import android.support.v4.util.ArrayMap;
 
-        import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Utility class that decides whether we should fetch some data or not.
  */
 public class RateLimiter<KEY> {
-    private ArrayMap<KEY, Long> timestamps = new ArrayMap<>();
+    private final ArrayMap<KEY, Long> timestamps = new ArrayMap<>();
     private final long timeout;
 
     public RateLimiter(int timeout, TimeUnit timeUnit) {

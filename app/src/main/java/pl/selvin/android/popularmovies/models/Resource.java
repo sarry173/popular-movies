@@ -28,6 +28,7 @@ import static pl.selvin.android.popularmovies.models.Status.SUCCESS;
  *
  * @param <T>
  */
+@SuppressWarnings("WeakerAccess")
 public class Resource<T> {
 
     @NonNull
@@ -57,6 +58,7 @@ public class Resource<T> {
         return new Resource<>(LOADING, data, null);
     }
 
+    @SuppressWarnings("SimplifiableIfStatement")
     @Override
     public boolean equals(Object o) {
         if (this == o) {

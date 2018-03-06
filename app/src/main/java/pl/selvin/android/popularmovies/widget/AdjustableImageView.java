@@ -10,7 +10,7 @@ import android.view.ViewParent;
 
 public class AdjustableImageView extends android.support.v7.widget.AppCompatImageView {
 
-    boolean mAdjustViewBounds;
+    private boolean mAdjustViewBounds;
 
     public AdjustableImageView(Context context) {
         super(context);

@@ -33,17 +33,12 @@ public abstract class MoviesDatabase extends RoomDatabase {
 
     @Dao
     public abstract static class MovieDao {
-        @Insert(onConflict = OnConflictStrategy.FAIL)
-        public abstract void insert(Movie... movies);
 
         @Insert(onConflict = OnConflictStrategy.REPLACE)
         public abstract void insertAll(List<Movie> movies);
 
         @Update(onConflict = OnConflictStrategy.FAIL)
         public abstract void update(Movie movie);
-
-        @Query("SELECT * FROM movies WHERE id=:id")
-        public abstract LiveData<Movie> loadMovie(long id);
 
         @Query("SELECT m.*, d.* FROM movies m LEFT OUTER JOIN moviesDetails d ON d.movieId = m.id WHERE id=:id")
         public abstract LiveData<MovieWithDetails> loadMovieDetails(long id);

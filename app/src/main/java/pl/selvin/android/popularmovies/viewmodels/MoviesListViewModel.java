@@ -65,8 +65,8 @@ public class MoviesListViewModel extends AndroidViewModel {
         return repository.getShowBottomNavigation();
     }
 
-    public boolean setShowBottomNavigation(boolean value) {
-        return repository.setShowBottomNavigation(value);
+    public void setShowBottomNavigation(boolean value) {
+        repository.setShowBottomNavigation(value);
     }
 
     public enum MoviesToShow {

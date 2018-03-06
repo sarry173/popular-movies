@@ -12,18 +12,14 @@ package pl.selvin.android.popularmovies.api;
 
 import android.arch.lifecycle.LiveData;
 
-import pl.selvin.android.popularmovies.models.MovieDetails;
-import pl.selvin.android.popularmovies.utils.LiveDataCallAdapterFactory;
 import pl.selvin.android.popularmovies.models.Movie;
+import pl.selvin.android.popularmovies.models.MovieDetails;
 import pl.selvin.android.popularmovies.models.Video;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
 import retrofit2.http.GET;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
 
 import static pl.selvin.android.popularmovies.utils.Constants.API_KEY;
-import static pl.selvin.android.popularmovies.utils.Constants.SERVICE_BASE_URL;
 
 public interface MoviesService {
     @GET("movie/popular?api_key=" + API_KEY)
@@ -32,15 +28,11 @@ public interface MoviesService {
 
     @GET("movie/top_rated?api_key=" + API_KEY)
     LiveData<ApiResponse<MoviesServiceResponse<Movie>>> getTopRatedMovies(@Query("language") String language, @SuppressWarnings("SameParameterValue") @Query("page") Integer page,
-                                          @SuppressWarnings("SameParameterValue") @Query("region") String region);
+                                                                          @SuppressWarnings("SameParameterValue") @Query("region") String region);
 
     @GET("movie/{movie_id}?api_key=" + API_KEY)
     LiveData<ApiResponse<MovieDetails>> getMovieDetails(@Path("movie_id") long id, @Query("language") String language);
 
     @GET("movie/{movie_id}/videos?api_key=" + API_KEY)
     LiveData<ApiResponse<MoviesServiceResponse<Video>>> getVideosForMovie(@Path("movie_id") long id, @Query("language") String language);
-
-    MoviesService INSTANCE = new Retrofit.Builder().addConverterFactory(GsonConverterFactory.create())
-            .addCallAdapterFactory(new LiveDataCallAdapterFactory())
-            .baseUrl(SERVICE_BASE_URL).build().create(MoviesService.class);
 }
