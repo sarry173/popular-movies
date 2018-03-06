@@ -8,23 +8,41 @@
  OF ANY KIND, either express or implied. See the License for the specific
  language governing permissions and limitations under the License.
  */
-package pl.selvin.android.popularmovies.models;
+package pl.selvin.android.popularmovies.api;
 
 import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
-public class VideosResponse {
-    @Expose
-    private int id;
-    @Expose
-    private List<Video> results;
+@SuppressWarnings("unused")
+public class MoviesServiceResponse<T> {
 
-    public int getId() {
-        return id;
+    @SerializedName("page")
+    private int page;
+
+    @SerializedName("results")
+    private List<T> results;
+
+    @SerializedName("total_results")
+    private int totalResults;
+
+    @SerializedName("total_pages")
+    private int totalPages;
+
+    public int getPage() {
+        return page;
     }
 
-    public List<Video> getResults() {
+    public List<T> getResults() {
         return results;
+    }
+
+    public int getTotalResults() {
+        return totalResults;
+    }
+
+    public int getTotalPages() {
+        return totalPages;
     }
 }

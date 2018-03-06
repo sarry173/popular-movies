@@ -14,9 +14,10 @@ package pl.selvin.android.popularmovies;
 
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
-import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
@@ -27,19 +28,22 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import pl.selvin.android.popularmovies.adapters.MoviesAdapter;
+import pl.selvin.android.popularmovies.models.Movie;
+import pl.selvin.android.popularmovies.models.Resource;
+import pl.selvin.android.popularmovies.models.Status;
 import pl.selvin.android.popularmovies.viewmodels.MoviesListViewModel;
+import pl.selvin.android.popularmovies.viewmodels.MoviesListViewModel.MoviesToShow;
 
 public class MoviesListActivity extends AppCompatActivity implements MoviesAdapter.ViewHolderListener {
+
     private static final int SHOW_DETAILS = 666;
-    private final View.OnClickListener dismissOnClick = new View.OnClickListener() {
-        @Override
-        public void onClick(View view) {
-            finish();
-        }
-    };
+
     private MoviesListViewModel model;
     @BindView(R.id.toolbar)
     Toolbar toolbar;
@@ -47,6 +51,8 @@ public class MoviesListActivity extends AppCompatActivity implements MoviesAdapt
     RecyclerView recyclerView;
     @BindView(R.id.movies_list_activity_progress)
     View progress;
+    @BindView(R.id.movies_list_activity_bottom_navigation)
+    BottomNavigationView bottomNavigationView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,53 +61,70 @@ public class MoviesListActivity extends AppCompatActivity implements MoviesAdapt
         ButterKnife.bind(this);
         setSupportActionBar(toolbar);
         model = ViewModelProviders.of(this).get(MoviesListViewModel.class);
-        model.getMovies().observe(this, new Observer<MoviesListViewModel.MoviesData>() {
+        bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
-            public void onChanged(@Nullable MoviesListViewModel.MoviesData moviesData) {
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                return onOptionsItemSelected(item);
+            }
+        });
+        recyclerView.setLayoutManager(new GridLayoutManager(MoviesListActivity.this, getResources().getInteger(R.integer.movies_span_count)));
+        final MoviesAdapter adapter = new MoviesAdapter(MoviesListActivity.this, new ArrayList<Movie>(), MoviesListActivity.this);
+        recyclerView.setAdapter(adapter);
+        model.movies.observe(this, new Observer<Resource<List<Movie>>>() {
+            @Override
+            public void onChanged(@Nullable Resource<List<Movie>> moviesData) {
                 if (moviesData != null) {
-                    progress.setVisibility(View.GONE);
-                    if (moviesData.successful) {
-                        recyclerView.setVisibility(View.VISIBLE);
-                        final int size = moviesData.movies.size();
-                        recyclerView.setLayoutManager(new GridLayoutManager(MoviesListActivity.this,
-                                Math.min(getResources().getInteger(R.integer.movies_span_count),  size < 1 ? 1 :size)));
-                        recyclerView.setAdapter(new MoviesAdapter(MoviesListActivity.this, moviesData.movies, MoviesListActivity.this));
+                    if (moviesData.data != null) {
+                        adapter.setMovies(moviesData.data);
+                    }
+                    if (moviesData.status == Status.SUCCESS) {
+                        progress.setVisibility(View.GONE);
+                    } else if (moviesData.status == Status.ERROR) {
+                        progress.setVisibility(View.GONE);
+                        Snackbar.make(findViewById(android.R.id.content), moviesData.message != null ? moviesData.message : "An error appear", Snackbar.LENGTH_SHORT)
+                                .show();
                     } else {
-                        recyclerView.setVisibility(View.GONE);
-                        final Snackbar snackBar;
-                        if (moviesData.errorRes == -1)
-                            snackBar = Snackbar.make(findViewById(android.R.id.content), moviesData.errorString, Snackbar.LENGTH_INDEFINITE);
-                        else
-                            snackBar = Snackbar.make(findViewById(android.R.id.content), moviesData.errorRes, Snackbar.LENGTH_INDEFINITE);
-                        snackBar.setAction(R.string.snackbar_dismiss, dismissOnClick).show();
+                        if (moviesData.data == null) {
+                            progress.setVisibility(View.VISIBLE);
+                        }
                     }
                 } else {
                     progress.setVisibility(View.VISIBLE);
-                    recyclerView.setVisibility(View.GONE);
                 }
-
             }
         });
     }
 
+    public int setupTitleAndGetSelectedMenu() {
+        switch (model.getMoviesToShow()) {
+            case POPULAR:
+                setTitle(R.string.movies_list_menu_popular);
+                return R.id.movies_list_menu_popular;
+            case TOP_RATED:
+                setTitle(R.string.movies_list_menu_top_rated);
+                return R.id.movies_list_menu_top_rated;
+            case FAVOURITE:
+                setTitle(R.string.movies_list_menu_favourite);
+                return R.id.movies_list_menu_favourite;
+        }
+        return -1;
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.movies_list_activity, menu);
-        switch (model.getMoviesToShow()) {
-            case MoviesListViewModel.MOVIES_TO_SHOW_POPULAR:
-                setTitle(R.string.movies_list_menu_popular);
-                menu.findItem(R.id.movies_list_menu_popular).setChecked(true);
-                break;
-            case MoviesListViewModel.MOVIES_TO_SHOW_TOP_RATED:
-                setTitle(R.string.movies_list_menu_top_rated);
-                menu.findItem(R.id.movies_list_menu_top_rated).setChecked(true);
-                break;
-            case MoviesListViewModel.MOVIES_TO_SHOW_FAVOURITE:
-                setTitle(R.string.movies_list_menu_favourite);
-                menu.findItem(R.id.movies_list_menu_favourite).setChecked(true);
-                break;
+        menu.clear();
+        final MenuInflater inflater = getMenuInflater();
+        final int selectedItemId = setupTitleAndGetSelectedMenu();
+        if (model.getShowBottomNavigation()) {
+            bottomNavigationView.setVisibility(View.VISIBLE);
+            bottomNavigationView.setSelectedItemId(selectedItemId);
+        } else {
+            inflater.inflate(R.menu.movies_list_activity_views, menu);
+            menu.findItem(selectedItemId).setChecked(true);
+            bottomNavigationView.setVisibility(View.GONE);
         }
+        inflater.inflate(R.menu.movies_list_activity, menu);
+        menu.findItem(R.id.movies_list_menu_show_bottom_navigation).setChecked(model.getShowBottomNavigation());
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -112,38 +135,33 @@ public class MoviesListActivity extends AppCompatActivity implements MoviesAdapt
                 if (!item.isChecked())
                     item.setChecked(true);
                 setTitle(R.string.movies_list_menu_popular);
-                model.setMoviesToShow(MoviesListViewModel.MOVIES_TO_SHOW_POPULAR);
+                model.setMoviesToShow(MoviesToShow.POPULAR);
                 return true;
             case R.id.movies_list_menu_top_rated:
                 if (!item.isChecked())
                     item.setChecked(true);
                 setTitle(R.string.movies_list_menu_top_rated);
-                model.setMoviesToShow(MoviesListViewModel.MOVIES_TO_SHOW_TOP_RATED);
+                model.setMoviesToShow(MoviesToShow.TOP_RATED);
                 return true;
             case R.id.movies_list_menu_favourite:
                 if (!item.isChecked())
                     item.setChecked(true);
                 setTitle(R.string.movies_list_menu_favourite);
-                model.setMoviesToShow(MoviesListViewModel.MOVIES_TO_SHOW_FAVOURITE);
+                model.setMoviesToShow(MoviesToShow.FAVOURITE);
+                return true;
+            case R.id.movies_list_menu_show_bottom_navigation:
+                boolean isChecked = !item.isChecked();
+                item.setChecked(isChecked);
+                model.setShowBottomNavigation(isChecked);
+                invalidateOptionsMenu();
                 return true;
         }
         return super.onOptionsItemSelected(item);
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == SHOW_DETAILS) {
-            progress.setVisibility(View.GONE);
-            return;
-        }
-        super.onActivityResult(requestCode, resultCode, data);
-    }
-
-    @Override
     public void onItemClick(MoviesAdapter.Holder holder) {
-        progress.setVisibility(View.VISIBLE);
-        MovieDetailsActivity.startDetailsActivityForResult(this, model.getMoviesToShow() == MoviesListViewModel.MOVIES_TO_SHOW_FAVOURITE,
-                holder, progress, SHOW_DETAILS);
+        MovieDetailsActivity.startDetailsActivityForResult(this, holder, SHOW_DETAILS);
     }
 
     @Override

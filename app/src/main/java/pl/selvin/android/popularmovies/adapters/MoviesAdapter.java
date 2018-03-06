@@ -17,7 +17,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -49,6 +48,12 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.Holder> {
     @Override
     public long getItemId(int position) {
         return mMovies == null ? -1 : mMovies.get(position).getId();
+    }
+
+    public void setMovies(List<Movie> movies) {
+        mMovies.clear();
+        mMovies.addAll(movies);
+        notifyDataSetChanged();
     }
 
     @NonNull
@@ -102,7 +107,6 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.Holder> {
             Picasso.with(itemView.getContext())
                     .load(IMAGE_BASE_URL_SIZED + movie.getPosterPath())
                     .placeholder(R.drawable.placeholder_background)
-                    .noFade()
                     .into(image, new Callback() {
                         @Override
                         public void onSuccess() {

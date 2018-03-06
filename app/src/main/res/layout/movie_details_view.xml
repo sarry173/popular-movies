@@ -83,6 +83,16 @@
         app:layout_constraintTop_toBottomOf="@+id/movie_details_duration"
         tools:text="8.1/10" />
 
+    <TextView
+        android:id="@+id/movie_details_status"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:textAppearance="@style/TextAppearance.AppCompat.Caption"
+        app:layout_constraintStart_toStartOf="@+id/movie_details_year"
+        app:layout_constraintTop_toBottomOf="@+id/movie_details_rating"
+        tools:text="Planning" />
+
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/movie_details_fav"
         android:layout_width="wrap_content"
@@ -93,9 +103,9 @@
         android:clickable="true"
         android:contentDescription="@string/movie_details_fav_title"
         android:focusable="true"
-        android:src="@drawable/ic_star"
+        android:src="@drawable/ic_favorite"
         app:layout_constraintStart_toEndOf="@+id/movie_details_guideline_50p"
-        app:layout_constraintTop_toBottomOf="@+id/movie_details_rating" />
+        app:layout_constraintTop_toBottomOf="@+id/movie_details_status" />
 
     <TextView
         android:id="@+id/movie_details_description"

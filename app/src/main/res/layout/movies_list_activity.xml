@@ -13,9 +13,10 @@
 
     <FrameLayout
         android:id="@+id/movies_list_activity_progress"
-        android:background="@color/semi_transparent_white"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:background="@color/semi_transparent_white">
+
         <ProgressBar
 
             style="?android:attr/progressBarStyleLarge"
@@ -39,5 +40,21 @@
             app:layout_scrollFlags="scroll|enterAlways" />
 
     </android.support.design.widget.AppBarLayout>
+
+
+    <android.support.design.widget.BottomNavigationView
+        android:id="@+id/movies_list_activity_bottom_navigation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_gravity="bottom"
+        app:itemBackground="@color/colorPrimary"
+        app:itemIconTint="@color/bottom_navigation_text"
+        app:itemTextColor="@color/bottom_navigation_text"
+        app:layout_collapseMode="parallax"
+        app:layout_behavior="@string/bottom_navigation_behavior"
+        app:layout_scrollFlags="scroll|enterAlways"
+        app:menu="@menu/movies_list_activity_views" />
+
 
 </android.support.design.widget.CoordinatorLayout>

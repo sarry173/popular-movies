@@ -13,8 +13,10 @@
     <string name="movie_details_image_content_description">Movie poster</string>
     <string name="movies_image_loading_progress">Progress indicator</string>
     <string name="videos_list_item_play_video">Play video</string>
-    <string name="movies_list_menu_popular">Popular movies</string>
-    <string name="movies_list_menu_top_rated">Top rated movies</string>
-    <string name="movies_list_menu_favourite">Favourite movies</string>
-
+    <string name="movies_list_menu_popular">Popular</string>
+    <string name="movies_list_menu_top_rated">Top rated</string>
+    <string name="movies_list_menu_favourite">Favourite</string>
+    <string name="movie_details_duration_unknown">n/a</string>
+    <string name="bottom_navigation_behavior" translatable="false">pl.selvin.android.popularmovies.widget.BottomNavigationBehavior</string>
+    <string name="movies_list_menu_show_bottom_navigation">Bottom navigation</string>
 </resources>

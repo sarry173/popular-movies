@@ -13,50 +13,89 @@ package pl.selvin.android.popularmovies.data;
 import android.arch.lifecycle.LiveData;
 import android.arch.persistence.room.Dao;
 import android.arch.persistence.room.Database;
-import android.arch.persistence.room.Delete;
 import android.arch.persistence.room.Insert;
 import android.arch.persistence.room.OnConflictStrategy;
 import android.arch.persistence.room.Query;
-import android.arch.persistence.room.Room;
 import android.arch.persistence.room.RoomDatabase;
+import android.arch.persistence.room.Transaction;
 import android.arch.persistence.room.Update;
-import android.content.Context;
 
 import java.util.List;
 
+import pl.selvin.android.popularmovies.api.MoviesServiceResponse;
 import pl.selvin.android.popularmovies.models.Movie;
+import pl.selvin.android.popularmovies.models.MovieDetails;
+import pl.selvin.android.popularmovies.models.MovieWithDetails;
 
-@Database(entities = {Movie.class}, version = 2)
+@Database(entities = {Movie.class, MovieDetails.class}, version = 4, exportSchema = false)
 public abstract class MoviesDatabase extends RoomDatabase {
     public abstract MovieDao movieDao();
 
     @Dao
-    public interface MovieDao {
-        @Query("SELECT * FROM movies")
-        LiveData<List<Movie>> getAll();
-
+    public abstract static class MovieDao {
         @Insert(onConflict = OnConflictStrategy.FAIL)
-        void insert(Movie movie);
+        public abstract void insert(Movie... movies);
+
+        @Insert(onConflict = OnConflictStrategy.REPLACE)
+        public abstract void insertAll(List<Movie> movies);
 
         @Update(onConflict = OnConflictStrategy.FAIL)
-        void update(Movie movie);
-
-        @Delete
-        void delete(Movie movie);
-
-        @Query("SELECT COUNT(1) FROM movies WHERE id=:id")
-        LiveData<Integer> count(long id);
+        public abstract void update(Movie movie);
 
         @Query("SELECT * FROM movies WHERE id=:id")
-        LiveData<Movie> getMovie(long id);
-    }
+        public abstract LiveData<Movie> loadMovie(long id);
 
-    private static MoviesDatabase INSTANCE;
+        @Query("SELECT m.*, d.* FROM movies m LEFT OUTER JOIN moviesDetails d ON d.movieId = m.id WHERE id=:id")
+        public abstract LiveData<MovieWithDetails> loadMovieDetails(long id);
 
-    public synchronized static MoviesDatabase getInstance(Context context) {
-        if (INSTANCE == null) {
-            INSTANCE = Room.databaseBuilder(context.getApplicationContext(), MoviesDatabase.class, "database-name").build();
+        @Query("SELECT * FROM movies WHERE id=:id")
+        protected abstract Movie loadMovieS(long id);
+
+        @Query("SELECT * FROM movies WHERE popular=1")
+        public abstract LiveData<List<Movie>> loadPopularMovies();
+
+        @Query("UPDATE movies SET popular=0 WHERE popular=1")
+        public abstract int unsetPopular();
+
+        @Transaction
+        public void insertPopular(MoviesServiceResponse<Movie> item) {
+            unsetPopular();
+            final List<Movie> movies = item.getResults();
+            for (final Movie movie : movies) {
+                final Movie existing = loadMovieS(movie.getId());
+                movie.setPopular(true);
+                if (existing != null) {
+                    movie.setTopRated(existing.isTopRated());
+                    movie.setFavourite(existing.isFavourite());
+                }
+            }
+            insertAll(movies);
         }
-        return INSTANCE;
+
+        @Query("SELECT * FROM movies WHERE topRated=1")
+        public abstract LiveData<List<Movie>> loadTopRatedMovies();
+
+        @Query("UPDATE movies SET topRated=0 WHERE topRated=1")
+        public abstract int unsetTopRated();
+
+        public void insertTopRated(MoviesServiceResponse<Movie> item) {
+            unsetTopRated();
+            final List<Movie> movies = item.getResults();
+            for (final Movie movie : movies) {
+                final Movie existing = loadMovieS(movie.getId());
+                movie.setTopRated(true);
+                if (existing != null) {
+                    movie.setPopular(existing.isPopular());
+                    movie.setFavourite(existing.isFavourite());
+                }
+            }
+            insertAll(movies);
+        }
+
+        @Query("SELECT * FROM movies WHERE favourite=1")
+        public abstract LiveData<List<Movie>> loadFavourite();
+
+        @Insert(onConflict = OnConflictStrategy.REPLACE)
+        public abstract void saveMovieDetails(MovieDetails item);
     }
 }

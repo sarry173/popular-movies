@@ -16,22 +16,6 @@
         <include layout="@layout/movie_details_view" />
     </android.support.v4.widget.NestedScrollView>
 
-    <FrameLayout
-        android:id="@+id/movie_details_activity_progress"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/semi_transparent_white">
-
-        <ProgressBar
-
-            style="?android:attr/progressBarStyleLarge"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical|center_horizontal"
-            tools:visibility="visible" />
-
-    </FrameLayout>
-
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -57,6 +41,7 @@
             tools:text="The Movie Title" />
 
         <TextView
+            style="@style/Widget.Design.BottomNavigationView"
             android:id="@+id/movie_details_title_org"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

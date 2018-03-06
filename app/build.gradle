@@ -15,7 +15,7 @@ android {
         targetSdkVersion 27
         versionCode 1
         versionName "0.1"
-        buildConfigField "String", "THEMOVIEDB_ORG_KEY", "\"$THEMOVIEDB_ORG_KEY\""
+        buildConfigField "String", "THEMOVIEDB_ORG_KEY", THEMOVIEDB_ORG_KEY
     }
 
     buildTypes {

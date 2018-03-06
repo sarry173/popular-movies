@@ -14,7 +14,6 @@ import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.Ignore;
 import android.arch.persistence.room.PrimaryKey;
 
-import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
@@ -23,44 +22,63 @@ import java.util.List;
 @Entity(tableName = "movies")
 public class Movie {
     @PrimaryKey
-    @Expose
-    private int id;
+    @SerializedName("id")
+    private long id;
     @SerializedName("poster_path")
-    @Expose
     private String posterPath;
-    @Expose
+    @SerializedName("adult")
     private Boolean adult;
-    @Expose
+    @SerializedName("overview")
     private String overview;
-    @Expose
     @SerializedName("release_date")
     private String releaseDate;
     @Ignore
-    @Expose
-    private List<Integer> genre_ids;
-    @Expose
+    @SerializedName("genre_ids")
+    private List<Integer> genreIds;
     @SerializedName("original_title")
     private String originalTitle;
-    @Expose
     @SerializedName("original_language")
     private String originalLanguage;
-    @Expose
+    @SerializedName("title")
     private String title;
-    @Expose
     @SerializedName("backdrop_path")
     private String backdropPath;
-    @Expose
+    @SerializedName("popularity")
     private double popularity;
-    @Expose
     @SerializedName("vote_count")
     private int voteCount;
-    @Expose
+    @SerializedName("video")
     private Boolean video;
-    @Expose
     @SerializedName("vote_average")
     private double voteAverage;
-    @Expose
-    private Integer runtime;
+
+    private boolean topRated;
+    private boolean popular;
+    private boolean favourite;
+
+    public boolean isTopRated() {
+        return topRated;
+    }
+
+    public void setTopRated(boolean topRated) {
+        this.topRated = topRated;
+    }
+
+    public boolean isPopular() {
+        return popular;
+    }
+
+    public void setPopular(boolean popular) {
+        this.popular = popular;
+    }
+
+    public boolean isFavourite() {
+        return favourite;
+    }
+
+    public void setFavourite(boolean favourite) {
+        this.favourite = favourite;
+    }
 
     public String getOriginalTitle() {
         return originalTitle;
@@ -111,18 +129,14 @@ public class Movie {
     }
 
     public List<Integer> getGenreIds() {
-        return genre_ids;
+        return genreIds;
     }
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
-    public Integer getRuntime() {
-        return runtime;
-    }
-
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 
@@ -142,8 +156,8 @@ public class Movie {
         this.releaseDate = releaseDate;
     }
 
-    public void setGenre_ids(List<Integer> genre_ids) {
-        this.genre_ids = genre_ids;
+    public void setGenreIds(List<Integer> genreIds) {
+        this.genreIds = genreIds;
     }
 
     public void setOriginalTitle(String originalTitle) {
@@ -178,7 +192,16 @@ public class Movie {
         this.voteAverage = voteAverage;
     }
 
-    public void setRuntime(Integer runtime) {
-        this.runtime = runtime;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        final Movie movie = (Movie) o;
+        return id == movie.id;
+    }
+
+    @Override
+    public int hashCode() {
+        return (int) id;
     }
 }
