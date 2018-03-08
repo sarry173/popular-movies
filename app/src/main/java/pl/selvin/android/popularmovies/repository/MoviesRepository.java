@@ -207,13 +207,15 @@ public class MoviesRepository {
         settings.edit().putString(MOVIES_TO_SHOW, moviesToShowIn.toString()).apply();
     }
 
-    public void saveMovie(final Movie movie) {
+    public LiveData<Integer> saveMovie(final Movie movie) {
+        final MutableLiveData<Integer> ret = new MutableLiveData<>();
         appExecutors.diskIO().execute(new Runnable() {
             @Override
             public void run() {
-                movieDao.update(movie);
+                ret.postValue(movieDao.update(movie));
             }
         });
+        return ret;
     }
 
     public boolean getShowBottomNavigation() {

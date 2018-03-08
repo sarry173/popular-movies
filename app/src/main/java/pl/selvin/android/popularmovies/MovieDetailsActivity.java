@@ -11,7 +11,6 @@
 
 package pl.selvin.android.popularmovies;
 
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
@@ -20,6 +19,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.util.Pair;
@@ -66,6 +66,7 @@ public class MovieDetailsActivity extends AppCompatActivity {
 
     private MovieDetailsViewModel model;
     private Movie movie = null;
+    private Snackbar lastSnack = null;
 
     @BindView(R.id.movie_details_request_focus)
     View requestFocusView;
@@ -99,13 +100,24 @@ public class MovieDetailsActivity extends AppCompatActivity {
     Toolbar toolbar;
     @BindView(R.id.scroll)
     NestedScrollView scroll;
+    @BindView(R.id.movie_details_coordinator_layout)
+    View coordinatorLayout;
 
-    @SuppressLint("StaticFieldLeak")
     @OnClick(R.id.movie_details_fav)
     void favOnClick(View view) {
         if (movie != null) {
-            movie.setFavourite(!movie.isFavourite());
-            model.saveMovie(movie);
+            final boolean fav = !movie.isFavourite();
+            movie.setFavourite(fav);
+            model.saveMovie(movie).observe(this, new Observer<Integer>() {
+                @Override
+                public void onChanged(@Nullable Integer integer) {
+                    if (lastSnack != null)
+                        lastSnack.dismiss();
+                    lastSnack = Snackbar.make(coordinatorLayout, fav ? "Movie added to favorites"
+                            : "Movie removed from favorites", Snackbar.LENGTH_SHORT);
+                    lastSnack.show();
+                }
+            });
         }
     }
 

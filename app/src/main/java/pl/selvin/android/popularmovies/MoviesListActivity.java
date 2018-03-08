@@ -53,6 +53,9 @@ public class MoviesListActivity extends AppCompatActivity implements MoviesAdapt
     View progress;
     @BindView(R.id.movies_list_activity_bottom_navigation)
     BottomNavigationView bottomNavigationView;
+    @BindView(R.id.movies_list_activity_coordinator_layout)
+    View coordinatorLayout;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,7 +84,7 @@ public class MoviesListActivity extends AppCompatActivity implements MoviesAdapt
                         progress.setVisibility(View.GONE);
                     } else if (moviesData.status == Status.ERROR) {
                         progress.setVisibility(View.GONE);
-                        Snackbar.make(findViewById(android.R.id.content), moviesData.message != null ? moviesData.message : "An error appear", Snackbar.LENGTH_SHORT)
+                        Snackbar.make(coordinatorLayout, moviesData.message != null ? moviesData.message : "An error appear", Snackbar.LENGTH_SHORT)
                                 .show();
                     } else {
                         if (moviesData.data == null) {

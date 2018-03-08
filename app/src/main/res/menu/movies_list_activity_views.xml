@@ -11,7 +11,7 @@
             android:title="@string/movies_list_menu_top_rated" />
         <item
             android:id="@+id/movies_list_menu_favourite"
-            android:icon="@drawable/ic_favorite"
+            android:icon="@drawable/ic_favorite_active"
             android:title="@string/movies_list_menu_favourite" />
 
     </group>

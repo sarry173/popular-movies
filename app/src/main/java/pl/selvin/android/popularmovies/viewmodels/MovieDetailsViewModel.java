@@ -36,7 +36,7 @@ public class MovieDetailsViewModel extends AndroidViewModel {
         return movie;
     }
 
-    public void saveMovie(Movie movie) {
-        repository.saveMovie(movie);
+    public LiveData<Integer> saveMovie(Movie movie) {
+        return repository.saveMovie(movie);
     }
 }

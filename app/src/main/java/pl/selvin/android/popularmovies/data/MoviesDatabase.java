@@ -38,7 +38,7 @@ public abstract class MoviesDatabase extends RoomDatabase {
         public abstract void insertAll(List<Movie> movies);
 
         @Update(onConflict = OnConflictStrategy.FAIL)
-        public abstract void update(Movie movie);
+        public abstract int update(Movie movie);
 
         @Query("SELECT m.*, d.* FROM movies m LEFT OUTER JOIN moviesDetails d ON d.movieId = m.id WHERE id=:id")
         public abstract LiveData<MovieWithDetails> loadMovieDetails(long id);
