@@ -3,7 +3,8 @@
     <color name="colorPrimary">#3a3a3a</color>
     <color name="colorPrimaryDark">#111111</color>
     <color name="colorAccent">#78909C</color>
-    <color name="title_background">#df78909C</color>
+    <color name="decorator_background">#df78909C</color>
+    <color name="title_background">#73000000</color>
     <color name="ic_launcher_background">#78909C</color>
     <color name="colorAccentA30">#4C78909C</color>
     <color name="semi_transparent_white">#1cffffff</color>
