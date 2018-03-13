@@ -16,12 +16,12 @@
 
 package pl.selvin.android.popularmovies.utils;
 
-        import android.os.Handler;
-        import android.os.Looper;
-        import android.support.annotation.NonNull;
+import android.os.Handler;
+import android.os.Looper;
+import android.support.annotation.NonNull;
 
-        import java.util.concurrent.Executor;
-        import java.util.concurrent.Executors;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 
 
 /**
@@ -37,28 +37,20 @@ public class AppExecutors {
 
     private final Executor diskIO;
 
-    private final Executor networkIO;
-
     private final Executor mainThread;
 
-    AppExecutors(Executor diskIO, Executor networkIO, Executor mainThread) {
+    private AppExecutors(Executor diskIO, Executor mainThread) {
         this.diskIO = diskIO;
-        this.networkIO = networkIO;
         this.mainThread = mainThread;
     }
 
 
-    AppExecutors() {
-        this(Executors.newSingleThreadExecutor(), Executors.newFixedThreadPool(3),
-                new MainThreadExecutor());
+    private AppExecutors() {
+        this(Executors.newSingleThreadExecutor(), new MainThreadExecutor());
     }
 
     public Executor diskIO() {
         return diskIO;
-    }
-
-    public Executor networkIO() {
-        return networkIO;
     }
 
     public Executor mainThread() {
@@ -67,6 +59,7 @@ public class AppExecutors {
 
     private static class MainThreadExecutor implements Executor {
         final private Handler mainThreadHandler = new Handler(Looper.getMainLooper());
+
         @Override
         public void execute(@NonNull Runnable command) {
             mainThreadHandler.post(command);

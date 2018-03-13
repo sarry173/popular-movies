@@ -161,11 +161,6 @@ public class MoviesRepository {
             protected LiveData<ApiResponse<MoviesServiceResponse<Movie>>> createCall() {
                 return new MutableLiveData<>();
             }
-
-            @Override
-            protected void onFetchFailed() {
-
-            }
         }.asLiveData();
     }
 
