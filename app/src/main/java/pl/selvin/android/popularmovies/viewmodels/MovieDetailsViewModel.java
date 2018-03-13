@@ -15,25 +15,42 @@ import android.arch.lifecycle.AndroidViewModel;
 import android.arch.lifecycle.LiveData;
 import android.support.annotation.NonNull;
 
+import java.util.List;
+
 import pl.selvin.android.popularmovies.models.Movie;
 import pl.selvin.android.popularmovies.models.MovieWithDetails;
 import pl.selvin.android.popularmovies.models.Resource;
+import pl.selvin.android.popularmovies.models.Review;
+import pl.selvin.android.popularmovies.models.Video;
 import pl.selvin.android.popularmovies.repository.MoviesRepository;
 
 public class MovieDetailsViewModel extends AndroidViewModel {
     final private MoviesRepository repository;
+    private LiveData<Resource<MovieWithDetails>> movie = null;
+    private LiveData<Resource<List<Video>>> videos = null;
+    private LiveData<Resource<List<Review>>> reviews = null;
 
     public MovieDetailsViewModel(@NonNull Application application) {
         super(application);
         repository = MoviesRepository.getInstance(application);
     }
 
-    private LiveData<Resource<MovieWithDetails>> movie = null;
-
     public LiveData<Resource<MovieWithDetails>> getMovieDetails(long id) {
         if (movie == null)
             movie = repository.loadMovieDetails(id);
         return movie;
+    }
+
+    public LiveData<Resource<List<Video>>> getVideosForMovie(long movieId) {
+        if (videos == null)
+            videos = repository.loadVideosForMovie(movieId);
+        return videos;
+    }
+
+    public LiveData<Resource<List<Review>>> getReviewsForMovie(long movieId) {
+        if (reviews == null)
+            reviews = repository.loadReviewsForMovie(movieId);
+        return reviews;
     }
 
     public LiveData<Integer> saveMovie(Movie movie) {

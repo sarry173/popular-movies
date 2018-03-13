@@ -3,5 +3,5 @@
     <dimen name="content_margin">60dp</dimen>
     <dimen name="title_padding">76dp</dimen>
     <integer name="movies_span_count">5</integer>
-    <integer name="videos_span_count">3</integer>
+    <integer name="videos_span_count">2</integer>
 </resources>

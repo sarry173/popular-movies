@@ -29,6 +29,8 @@ import pl.selvin.android.popularmovies.models.Movie;
 import pl.selvin.android.popularmovies.models.MovieDetails;
 import pl.selvin.android.popularmovies.models.MovieWithDetails;
 import pl.selvin.android.popularmovies.models.Resource;
+import pl.selvin.android.popularmovies.models.Review;
+import pl.selvin.android.popularmovies.models.Video;
 import pl.selvin.android.popularmovies.utils.AppExecutors;
 import pl.selvin.android.popularmovies.utils.LiveDataCallAdapterFactory;
 import pl.selvin.android.popularmovies.utils.RateLimiter;
@@ -199,6 +201,72 @@ public class MoviesRepository {
         }.asLiveData();
     }
 
+    public LiveData<Resource<List<Video>>> loadVideosForMovie(final long movieId) {
+        return new NetworkBoundResource<List<Video>, MoviesServiceResponse<Video>>(appExecutors) {
+            private final String VIDEOS_FOR_MOVIE_KEY = "VIDEOS_FOR_MOVIE_KEY_" + movieId;
+
+            @Override
+            protected void saveCallResult(@NonNull MoviesServiceResponse<Video> item) {
+                movieDao.insertVideos(item, movieId);
+            }
+
+            @Override
+            protected boolean shouldFetch(@Nullable List<Video> data) {
+                return data == null || data.isEmpty() || listRateLimit.shouldFetch(VIDEOS_FOR_MOVIE_KEY);
+            }
+
+            @NonNull
+            @Override
+            protected LiveData<List<Video>> loadFromDb() {
+                return movieDao.loadVideosForMovie(movieId);
+            }
+
+            @NonNull
+            @Override
+            protected LiveData<ApiResponse<MoviesServiceResponse<Video>>> createCall() {
+                return moviesService.getVideosForMovie(movieId, LANG);
+            }
+
+            @Override
+            protected void onFetchFailed() {
+                listRateLimit.reset(VIDEOS_FOR_MOVIE_KEY);
+            }
+        }.asLiveData();
+    }
+
+    public LiveData<Resource<List<Review>>> loadReviewsForMovie(final long movieId) {
+        return new NetworkBoundResource<List<Review>, MoviesServiceResponse<Review>>(appExecutors) {
+            private final String REVIEWS_FOR_MOVIE_KEY = "REVIEWS_FOR_MOVIE_KEY_" + movieId;
+
+            @Override
+            protected void saveCallResult(@NonNull MoviesServiceResponse<Review> item) {
+                movieDao.insertReviews(item, movieId);
+            }
+
+            @Override
+            protected boolean shouldFetch(@Nullable List<Review> data) {
+                return data == null || data.isEmpty() || listRateLimit.shouldFetch(REVIEWS_FOR_MOVIE_KEY);
+            }
+
+            @NonNull
+            @Override
+            protected LiveData<List<Review>> loadFromDb() {
+                return movieDao.loadReviewsForMovie(movieId);
+            }
+
+            @NonNull
+            @Override
+            protected LiveData<ApiResponse<MoviesServiceResponse<Review>>> createCall() {
+                return moviesService.getReviewsForMovie(movieId, LANG);
+            }
+
+            @Override
+            protected void onFetchFailed() {
+                listRateLimit.reset(REVIEWS_FOR_MOVIE_KEY);
+            }
+        }.asLiveData();
+    }
+
     public MoviesToShow loadMoviesToShow() {
         return MoviesToShow.valueOf(settings.getString(MOVIES_TO_SHOW, DEFAULT_MOVIE_TO_SHOW.toString()));
     }
@@ -212,7 +280,7 @@ public class MoviesRepository {
         appExecutors.diskIO().execute(new Runnable() {
             @Override
             public void run() {
-                ret.postValue(movieDao.update(movie));
+                ret.postValue(movieDao.updateMovie(movie));
             }
         });
         return ret;

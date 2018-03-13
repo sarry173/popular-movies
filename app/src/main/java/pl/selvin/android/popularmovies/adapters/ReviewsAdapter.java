@@ -16,60 +16,60 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import pl.selvin.android.popularmovies.R;
-import pl.selvin.android.popularmovies.models.Video;
+import pl.selvin.android.popularmovies.models.Review;
 
-public class VideosAdapter extends RecyclerView.Adapter<VideosAdapter.ViewHolder> {
+public class ReviewsAdapter extends RecyclerView.Adapter<ReviewsAdapter.ViewHolder> {
     private final LayoutInflater mInflater;
-    private final List<Video> mVideos;
+    private final List<Review> mReviews;
 
-    public VideosAdapter(Context context, List<Video> videos) {
+    public ReviewsAdapter(Context context, List<Review> reviews) {
         mInflater = LayoutInflater.from(context);
-        mVideos = videos;
+        mReviews = reviews;
     }
 
-    public void setVideos(List<Video> videos) {
-        mVideos.clear();
-        mVideos.addAll(videos);
+    public void setReviews(List<Review> reviews) {
+        mReviews.clear();
+        mReviews.addAll(reviews);
         notifyDataSetChanged();
     }
 
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        return new ViewHolder(mInflater.inflate(R.layout.videos_list_item, parent, false));
+        return new ViewHolder(mInflater.inflate(R.layout.reviews_list_item, parent, false));
     }
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        holder.bind(mVideos.get(position));
+        holder.bind(mReviews.get(position));
     }
 
     @Override
     public int getItemCount() {
-        return mVideos.size();
+        return mReviews.size();
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder {
-        @BindView(R.id.videos_list_item_name)
-        TextView name;
-        @BindView(R.id.videos_list_item_site_and_type)
-        TextView siteAndType;
+        @BindView(R.id.reviews_list_item_author)
+        TextView author;
+        @BindView(R.id.reviews_list_item_content)
+        TextView content;
 
         ViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
         }
 
-        void bind(Video video) {
-            name.setText(video.getName());
-            name.setTag(video.getVideoUri());
-            siteAndType.setText(siteAndType.getContext().getString(R.string.common_concatenate_with_dash,video.getSite(), video.getType()));
+        void bind(Review review) {
+            author.setText(review.getAuthor());
+            author.setTag(Uri.parse(review.getUrl()));
+            content.setText(review.getContent());
         }
 
-        @OnClick(R.id.videos_list_item_decorator)
+        @OnClick(R.id.reviews_list_item_decorator)
         void onClick(View view) {
             final Context context = view.getContext();
-            context.startActivity(new Intent(Intent.ACTION_VIEW).setData((Uri) name.getTag()));
+            context.startActivity(new Intent(Intent.ACTION_VIEW).setData((Uri) author.getTag()));
         }
     }
 }

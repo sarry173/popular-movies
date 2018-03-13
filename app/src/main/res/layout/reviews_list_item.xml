@@ -5,22 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <ImageView
-        android:id="@+id/videos_list_item_image"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginRight="8dp"
-        android:layout_marginTop="8dp"
-        android:contentDescription="@string/videos_list_item_play_video"
-        android:src="@drawable/ic_play_arrow"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
     <TextView
-        android:id="@+id/videos_list_item_name"
+        android:id="@+id/reviews_list_item_author"
         style="@style/TextAppearance.AppCompat.Subhead"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -28,12 +14,12 @@
         android:layout_marginLeft="8dp"
         android:layout_marginTop="4dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/videos_list_item_image"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:text="2 Girls 1 Cup " />
 
     <TextView
-        android:id="@+id/videos_list_item_site_and_type"
+        android:id="@+id/reviews_list_item_content"
         style="@style/TextAppearance.AppCompat.Caption"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -41,12 +27,14 @@
         android:layout_marginLeft="8dp"
         android:layout_marginBottom="4dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="@+id/videos_list_item_name"
-        app:layout_constraintTop_toBottomOf="@+id/videos_list_item_name"
-        tools:text="YouTube - Clip" />
+        android:justificationMode="inter_word"
+        app:layout_constraintStart_toStartOf="@+id/reviews_list_item_author"
+        app:layout_constraintTop_toBottomOf="@+id/reviews_list_item_author"
+        tools:text="YouTube - Clip"
+        tools:ignore="UnusedAttribute" />
 
     <View
-        android:id="@+id/videos_list_item_decorator"
+        android:id="@+id/reviews_list_item_decorator"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:background="?attr/selectableItemBackground"

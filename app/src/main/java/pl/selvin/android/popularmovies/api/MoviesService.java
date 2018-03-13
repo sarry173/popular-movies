@@ -14,6 +14,7 @@ import android.arch.lifecycle.LiveData;
 
 import pl.selvin.android.popularmovies.models.Movie;
 import pl.selvin.android.popularmovies.models.MovieDetails;
+import pl.selvin.android.popularmovies.models.Review;
 import pl.selvin.android.popularmovies.models.Video;
 import retrofit2.http.GET;
 import retrofit2.http.Path;
@@ -35,4 +36,7 @@ public interface MoviesService {
 
     @GET("movie/{movie_id}/videos?api_key=" + API_KEY)
     LiveData<ApiResponse<MoviesServiceResponse<Video>>> getVideosForMovie(@Path("movie_id") long id, @Query("language") String language);
+
+    @GET("movie/{movie_id}/reviews?api_key=" + API_KEY)
+    LiveData<ApiResponse<MoviesServiceResponse<Review>>> getReviewsForMovie(@Path("movie_id") long id, @Query("language") String language);
 }

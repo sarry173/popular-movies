@@ -27,6 +27,9 @@ import android.support.v4.view.ViewCompat;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.DividerItemDecoration;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
@@ -36,14 +39,22 @@ import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import pl.selvin.android.popularmovies.adapters.MoviesAdapter;
+import pl.selvin.android.popularmovies.adapters.ReviewsAdapter;
+import pl.selvin.android.popularmovies.adapters.VideosAdapter;
 import pl.selvin.android.popularmovies.models.Movie;
 import pl.selvin.android.popularmovies.models.MovieDetails;
 import pl.selvin.android.popularmovies.models.MovieWithDetails;
 import pl.selvin.android.popularmovies.models.Resource;
+import pl.selvin.android.popularmovies.models.Review;
+import pl.selvin.android.popularmovies.models.Status;
+import pl.selvin.android.popularmovies.models.Video;
 import pl.selvin.android.popularmovies.viewmodels.MovieDetailsViewModel;
 
 import static pl.selvin.android.popularmovies.utils.Constants.IMAGE_BASE_URL_SIZED;
@@ -86,12 +97,18 @@ public class MovieDetailsActivity extends AppCompatActivity {
     TextView durationView;
     @BindView(R.id.movie_details_description)
     TextView descriptionView;
-    @BindView(R.id.movie_details_divider)
-    View dividerView;
+    @BindView(R.id.movie_details_videos_divider)
+    View videosDividerView;
     @BindView(R.id.movie_details_videos)
     RecyclerView videosView;
     @BindView(R.id.movie_details_videos_title)
     TextView videosTitleView;
+    @BindView(R.id.movie_details_reviews_divider)
+    View reviewsDividerView;
+    @BindView(R.id.movie_details_reviews)
+    RecyclerView reviewsView;
+    @BindView(R.id.movie_details_reviews_title)
+    TextView reviewsTitleView;
     @BindView(R.id.movie_details_image_progress)
     View imageProgress;
     @BindView(R.id.movie_details_fav)
@@ -194,31 +211,62 @@ public class MovieDetailsActivity extends AppCompatActivity {
                                                     supportStartPostponedEnterTransition();
                                             }
                                         });
-                                /*
-                                videosView.setLayoutManager(new GridLayoutManager(MovieDetailsActivity.this, getResources().getInteger(R.integer.videos_span_count)));
-                                MoviesService.Service.getInstance().getVideosForMovie(id, Constants.LANG).enqueue(new Callback<MoviesServiceResponse<Video>>() {
-                                    @Override
-                                    public void onResponse(@NonNull Call<MoviesServiceResponse<Video>> call, @NonNull Response<MoviesServiceResponse<Video>> response) {
-                                        if (response.isSuccessful()) {
-                                            final MoviesServiceResponse<Video> videosResponse = response.body();
-                                            if (videosResponse != null) {
-                                                final List<Video> videos = videosResponse.getResults();
-                                                if (videos.size() > 0) {
-                                                    dividerView.setVisibility(View.VISIBLE);
-                                                    videosView.setVisibility(View.VISIBLE);
-                                                    videosTitleView.setVisibility(View.VISIBLE);
-                                                    videosView.setAdapter(new VideosAdapter(MovieDetailsActivity.this, videos));
-                                                }
-                                            }
-                                        }
-                                        scroll.scrollTo(0, 0);
-                                    }
 
-                                    @Override
-                                    public void onFailure(@NonNull Call<MoviesServiceResponse<Video>> call, @NonNull Throwable throwable) {
-                                    }
-                                });*/
                             }
+                        }
+                    }
+                });
+                videosView.setLayoutManager(new GridLayoutManager(MovieDetailsActivity.this, getResources().getInteger(R.integer.videos_span_count)));
+                final VideosAdapter videosAdapter = new VideosAdapter(this, new ArrayList<Video>());
+                videosView.setAdapter(videosAdapter);
+                model.getVideosForMovie(id).observe(this, new Observer<Resource<List<Video>>>() {
+                    @Override
+                    public void onChanged(@Nullable Resource<List<Video>> videosData) {
+                        if (videosData != null) {
+                            if (videosData.data != null) {
+                                videosAdapter.setVideos(videosData.data);
+                            }
+                            if (videosData.status == Status.SUCCESS) {
+                                setVideosVisible(videosData.data != null && videosData.data.size() > 0);
+                            } else if (videosData.status == Status.ERROR) {
+                                setVideosVisible(false);
+                                Snackbar.make(coordinatorLayout, videosData.message != null ? videosData.message : "An error appear", Snackbar.LENGTH_SHORT)
+                                        .show();
+                            } else {
+                                if (videosData.data == null) {
+                                    setVideosVisible(false);
+                                }
+                            }
+                        } else {
+                            setVideosVisible(false);
+                        }
+                    }
+                });
+                reviewsView.setLayoutManager(new LinearLayoutManager(MovieDetailsActivity.this));
+                final ReviewsAdapter reviewsAdapter = new ReviewsAdapter(this, new ArrayList<Review>());
+                reviewsView.setAdapter(reviewsAdapter);
+                reviewsView.addItemDecoration(new DividerItemDecoration(MovieDetailsActivity.this,
+                        DividerItemDecoration.VERTICAL));
+                model.getReviewsForMovie(id).observe(this, new Observer<Resource<List<Review>>>() {
+                    @Override
+                    public void onChanged(@Nullable Resource<List<Review>> reviewsData) {
+                        if (reviewsData != null) {
+                            if (reviewsData.data != null) {
+                                reviewsAdapter.setReviews(reviewsData.data);
+                            }
+                            if (reviewsData.status == Status.SUCCESS) {
+                                setReviewsVisible(reviewsData.data != null && reviewsData.data.size() > 0);
+                            } else if (reviewsData.status == Status.ERROR) {
+                                setReviewsVisible(false);
+                                Snackbar.make(coordinatorLayout, reviewsData.message != null ? reviewsData.message : "An error appear", Snackbar.LENGTH_SHORT)
+                                        .show();
+                            } else {
+                                if (reviewsData.data == null) {
+                                    setReviewsVisible(false);
+                                }
+                            }
+                        } else {
+                            setReviewsVisible(false);
                         }
                     }
                 });
@@ -226,6 +274,20 @@ public class MovieDetailsActivity extends AppCompatActivity {
             }
         }
         finish();
+    }
+
+    private void setVideosVisible(boolean visible) {
+        final int visibility = visible ? View.VISIBLE : View.GONE;
+        videosDividerView.setVisibility(visibility);
+        videosTitleView.setVisibility(visibility);
+        videosView.setVisibility(visibility);
+    }
+
+    private void setReviewsVisible(boolean visible) {
+        final int visibility = visible ? View.VISIBLE : View.GONE;
+        reviewsDividerView.setVisibility(visibility);
+        reviewsTitleView.setVisibility(visibility);
+        reviewsView.setVisibility(visibility);
     }
 
     @Override

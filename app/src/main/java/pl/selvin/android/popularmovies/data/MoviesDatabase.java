@@ -26,8 +26,10 @@ import pl.selvin.android.popularmovies.api.MoviesServiceResponse;
 import pl.selvin.android.popularmovies.models.Movie;
 import pl.selvin.android.popularmovies.models.MovieDetails;
 import pl.selvin.android.popularmovies.models.MovieWithDetails;
+import pl.selvin.android.popularmovies.models.Review;
+import pl.selvin.android.popularmovies.models.Video;
 
-@Database(entities = {Movie.class, MovieDetails.class}, version = 4, exportSchema = false)
+@Database(entities = {Movie.class, MovieDetails.class, Video.class, Review.class}, version = 7, exportSchema = false)
 public abstract class MoviesDatabase extends RoomDatabase {
     public abstract MovieDao movieDao();
 
@@ -35,10 +37,16 @@ public abstract class MoviesDatabase extends RoomDatabase {
     public abstract static class MovieDao {
 
         @Insert(onConflict = OnConflictStrategy.REPLACE)
-        public abstract void insertAll(List<Movie> movies);
+        public abstract void insertAllMovies(List<Movie> movies);
+
+        @Insert(onConflict = OnConflictStrategy.REPLACE)
+        public abstract void insertAllVideos(List<Video> movies);
+
+        @Insert(onConflict = OnConflictStrategy.REPLACE)
+        public abstract void insertAllReviews(List<Review> movies);
 
         @Update(onConflict = OnConflictStrategy.FAIL)
-        public abstract int update(Movie movie);
+        public abstract int updateMovie(Movie movie);
 
         @Query("SELECT m.*, d.* FROM movies m LEFT OUTER JOIN moviesDetails d ON d.movieId = m.id WHERE id=:id")
         public abstract LiveData<MovieWithDetails> loadMovieDetails(long id);
@@ -49,6 +57,13 @@ public abstract class MoviesDatabase extends RoomDatabase {
         @Query("SELECT * FROM movies WHERE popular=1")
         public abstract LiveData<List<Movie>> loadPopularMovies();
 
+        @Query("SELECT * FROM videos WHERE movieId=:movieId")
+        public abstract LiveData<List<Video>> loadVideosForMovie(long movieId);
+
+        @Query("SELECT * FROM reviews WHERE movieId=:movieId")
+        public abstract LiveData<List<Review>> loadReviewsForMovie(long movieId);
+
+        @SuppressWarnings("UnusedReturnValue")
         @Query("UPDATE movies SET popular=0 WHERE popular=1")
         public abstract int unsetPopular();
 
@@ -64,12 +79,13 @@ public abstract class MoviesDatabase extends RoomDatabase {
                     movie.setFavourite(existing.isFavourite());
                 }
             }
-            insertAll(movies);
+            insertAllMovies(movies);
         }
 
         @Query("SELECT * FROM movies WHERE topRated=1")
         public abstract LiveData<List<Movie>> loadTopRatedMovies();
 
+        @SuppressWarnings("UnusedReturnValue")
         @Query("UPDATE movies SET topRated=0 WHERE topRated=1")
         public abstract int unsetTopRated();
 
@@ -84,7 +100,7 @@ public abstract class MoviesDatabase extends RoomDatabase {
                     movie.setFavourite(existing.isFavourite());
                 }
             }
-            insertAll(movies);
+            insertAllMovies(movies);
         }
 
         @Query("SELECT * FROM movies WHERE favourite=1")
@@ -92,5 +108,21 @@ public abstract class MoviesDatabase extends RoomDatabase {
 
         @Insert(onConflict = OnConflictStrategy.REPLACE)
         public abstract void saveMovieDetails(MovieDetails item);
+
+        public void insertVideos(MoviesServiceResponse<Video> item, long movieId) {
+            final List<Video> videos = item.getResults();
+            for (Video video : videos) {
+                video.setMovieId(movieId);
+            }
+            insertAllVideos(videos);
+        }
+
+        public void insertReviews(MoviesServiceResponse<Review> item, long movieId) {
+            final List<Review> reviews = item.getResults();
+            for (Review review : reviews) {
+                review.setMovieId(movieId);
+            }
+            insertAllReviews(reviews);
+        }
     }
 }

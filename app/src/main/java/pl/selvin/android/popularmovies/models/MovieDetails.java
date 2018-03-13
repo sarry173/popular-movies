@@ -15,7 +15,6 @@ import android.arch.persistence.room.PrimaryKey;
 
 import com.google.gson.annotations.SerializedName;
 
-@SuppressWarnings("unused")
 @Entity(tableName = "moviesDetails")
 public class MovieDetails {
     @PrimaryKey

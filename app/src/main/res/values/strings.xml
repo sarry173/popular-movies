@@ -6,6 +6,7 @@
     <string name="movie_details_rating_format">%,.1f/10</string>
     <string name="movie_details_title_org_format">(%s)</string>
     <string name="movie_details_videos_title">Videos:</string>
+    <string name="movie_details_reviews_title">Reviews:</string>
     <string name="movie_details_image_content_description">Movie poster</string>
     <string name="videos_list_item_play_video">Play video</string>
     <string name="movies_list_menu_popular">Popular</string>
@@ -14,4 +15,5 @@
     <string name="movie_details_duration_unknown">n/a</string>
     <string name="bottom_navigation_behavior" translatable="false">pl.selvin.android.popularmovies.widget.BottomNavigationBehavior</string>
     <string name="movies_list_menu_show_bottom_navigation">Bottom navigation</string>
+    <string name="common_concatenate_with_dash">%s - %s</string>
 </resources>

@@ -10,31 +10,96 @@
  */
 package pl.selvin.android.popularmovies.models;
 
+import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.PrimaryKey;
 import android.net.Uri;
+import android.support.annotation.NonNull;
 
-import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
 
 import static pl.selvin.android.popularmovies.utils.Constants.YOUTUBE_BASE_URL;
 
 @SuppressWarnings("unused")
+@Entity(tableName = "videos")
 public class Video {
-    @Expose
+    @SuppressWarnings("NullableProblems")
+    @PrimaryKey
+    @SerializedName("id")
+    @NonNull
     private String id;
-    @Expose
+
+    @SerializedName("key")
     private String key;
-    @Expose
+
+    @SerializedName("name")
     private String name;
 
+    @SerializedName("site")
+    private String site;
+
+    @SerializedName("size")
+    private Integer size;
+
+    @SerializedName("type")
+    private String type;
+
+    private long movieId;
+
+    @NonNull
     public String getId() {
         return id;
+    }
+
+    public void setId(@NonNull String id) {
+        this.id = id;
     }
 
     public String getKey() {
         return key;
     }
 
+    public void setKey(String key) {
+        this.key = key;
+    }
+
     public String getName() {
         return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public long getMovieId() {
+        return movieId;
+    }
+
+    public void setMovieId(long movieId) {
+        this.movieId = movieId;
+    }
+
+    public String getSite() {
+        return site;
+    }
+
+    public void setSite(String site) {
+        this.site = site;
+    }
+
+    public Integer getSize() {
+        return size;
+    }
+
+    public void setSize(Integer size) {
+        this.size = size;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 
     public Uri getVideoUri() {

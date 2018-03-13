@@ -24,36 +24,51 @@ public class Movie {
     @PrimaryKey
     @SerializedName("id")
     private long id;
+
     @SerializedName("poster_path")
     private String posterPath;
+
     @SerializedName("adult")
     private Boolean adult;
+
     @SerializedName("overview")
     private String overview;
+
     @SerializedName("release_date")
     private String releaseDate;
+
     @Ignore
     @SerializedName("genre_ids")
     private List<Integer> genreIds;
+
     @SerializedName("original_title")
     private String originalTitle;
+
     @SerializedName("original_language")
     private String originalLanguage;
+
     @SerializedName("title")
     private String title;
+
     @SerializedName("backdrop_path")
     private String backdropPath;
+
     @SerializedName("popularity")
     private double popularity;
+
     @SerializedName("vote_count")
     private int voteCount;
+
     @SerializedName("video")
     private Boolean video;
+
     @SerializedName("vote_average")
     private double voteAverage;
 
     private boolean topRated;
+
     private boolean popular;
+
     private boolean favourite;
 
     public boolean isTopRated() {
