@@ -224,19 +224,13 @@ public class MovieDetailsActivity extends AppCompatActivity {
                     public void onChanged(@Nullable Resource<List<Video>> videosData) {
                         if (videosData != null) {
                             if (videosData.data != null) {
+                                setVideosVisible(videosData.data.size() > 0);
                                 videosAdapter.setVideos(videosData.data);
+                                requestFocusView.requestFocus();
                             }
-                            if (videosData.status == Status.SUCCESS) {
-                                setVideosVisible(videosData.data != null && videosData.data.size() > 0);
-                            } else if (videosData.status == Status.ERROR) {
-                                setVideosVisible(false);
+                            if (videosData.status == Status.ERROR)
                                 Snackbar.make(coordinatorLayout, videosData.message != null ? videosData.message : "An error appear", Snackbar.LENGTH_SHORT)
                                         .show();
-                            } else {
-                                if (videosData.data == null) {
-                                    setVideosVisible(false);
-                                }
-                            }
                         } else {
                             setVideosVisible(false);
                         }
@@ -252,19 +246,13 @@ public class MovieDetailsActivity extends AppCompatActivity {
                     public void onChanged(@Nullable Resource<List<Review>> reviewsData) {
                         if (reviewsData != null) {
                             if (reviewsData.data != null) {
+                                setReviewsVisible(reviewsData.data.size() > 0);
                                 reviewsAdapter.setReviews(reviewsData.data);
+                                requestFocusView.requestFocus();
                             }
-                            if (reviewsData.status == Status.SUCCESS) {
-                                setReviewsVisible(reviewsData.data != null && reviewsData.data.size() > 0);
-                            } else if (reviewsData.status == Status.ERROR) {
-                                setReviewsVisible(false);
+                            if (reviewsData.status == Status.ERROR)
                                 Snackbar.make(coordinatorLayout, reviewsData.message != null ? reviewsData.message : "An error appear", Snackbar.LENGTH_SHORT)
                                         .show();
-                            } else {
-                                if (reviewsData.data == null) {
-                                    setReviewsVisible(false);
-                                }
-                            }
                         } else {
                             setReviewsVisible(false);
                         }

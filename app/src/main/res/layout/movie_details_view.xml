@@ -9,6 +9,7 @@
         android:id="@+id/movie_details_request_focus"
         android:layout_width="1dp"
         android:layout_height="1dp"
+        android:focusableInTouchMode="true"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
