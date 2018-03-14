@@ -156,7 +156,6 @@ public class MovieDetailsActivity extends AppCompatActivity {
             ViewCompat.setTransitionName(titleView, "title" + id);
             if (id != -1) {
                 setTitle(R.string.movie_detail_title);
-                imageProgress.setVisibility(View.VISIBLE);
                 model = ViewModelProviders.of(this).get(MovieDetailsViewModel.class);
                 model.getMovieDetails(id).observe(this, new Observer<Resource<MovieWithDetails>>() {
                     @Override
@@ -192,6 +191,7 @@ public class MovieDetailsActivity extends AppCompatActivity {
                                     durationView.setText(getString(R.string.movie_details_duration_unknown));
                                     statusView.setVisibility(View.INVISIBLE);
                                 }
+                                imageProgress.setVisibility(View.VISIBLE);
                                 Picasso.with(imageView.getContext())
                                         .load(IMAGE_BASE_URL_SIZED + movie.getPosterPath())
                                         .placeholder(R.drawable.placeholder_background)

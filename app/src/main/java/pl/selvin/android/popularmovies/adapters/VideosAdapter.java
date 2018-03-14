@@ -1,5 +1,6 @@
 package pl.selvin.android.popularmovies.adapters;
 
+import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -9,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.List;
 
@@ -63,13 +65,17 @@ public class VideosAdapter extends RecyclerView.Adapter<VideosAdapter.ViewHolder
         void bind(Video video) {
             name.setText(video.getName());
             name.setTag(video.getVideoUri());
-            siteAndType.setText(siteAndType.getContext().getString(R.string.common_concatenate_with_dash,video.getSite(), video.getType()));
+            siteAndType.setText(siteAndType.getContext().getString(R.string.common_concatenate_with_dash, video.getSite(), video.getType()));
         }
 
         @OnClick(R.id.videos_list_item_decorator)
         void onClick(View view) {
             final Context context = view.getContext();
-            context.startActivity(new Intent(Intent.ACTION_VIEW).setData((Uri) name.getTag()));
+            try {
+                context.startActivity(new Intent(Intent.ACTION_VIEW).setData((Uri) name.getTag()));
+            } catch (ActivityNotFoundException ignore) {
+                Toast.makeText(context, R.string.error_activity_not_found, Toast.LENGTH_SHORT).show();
+            }
         }
     }
 }

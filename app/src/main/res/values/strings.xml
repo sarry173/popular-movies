@@ -16,4 +16,5 @@
     <string name="bottom_navigation_behavior" translatable="false">pl.selvin.android.popularmovies.widget.BottomNavigationBehavior</string>
     <string name="movies_list_menu_show_bottom_navigation">Bottom navigation</string>
     <string name="common_concatenate_with_dash">%s - %s</string>
+    <string name="error_activity_not_found">An Activity can not be found to execute the given Intent.</string>
 </resources>

@@ -134,6 +134,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:barrierDirection="bottom"
-        app:constraint_referenced_ids="movie_details_description,movie_details_image" />
+        app:constraint_referenced_ids="movie_details_description,movie_details_image,movie_details_fav" />
 
 </merge>
