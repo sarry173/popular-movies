@@ -12,7 +12,6 @@ package pl.selvin.android.popularmovies.repository;
 
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
-import android.arch.persistence.room.Room;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
@@ -41,6 +40,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 import static pl.selvin.android.popularmovies.utils.Constants.LANG;
 import static pl.selvin.android.popularmovies.utils.Constants.SERVICE_BASE_URL;
 
+//Room => ContentProvider refactoring - fortunately refactoring didn't affect this class
 public class MoviesRepository {
     private static final String SETTINGS_KEY = "MOVIES_LIST_SETTINGS";
     private static final String MOVIES_TO_SHOW = "MOVIES_TO_SHOW_STRING";
@@ -53,11 +53,9 @@ public class MoviesRepository {
     private final MoviesService moviesService;
 
     private MoviesRepository(Context context) {
-        final MoviesDatabase database = Room.databaseBuilder(context.getApplicationContext(), MoviesDatabase.class, "movies")
-                .fallbackToDestructiveMigration().build();
         settings = context.getSharedPreferences(SETTINGS_KEY, 0);
         appExecutors = AppExecutors.INSTANCE;
-        movieDao = database.movieDao();
+        movieDao = new MoviesDatabase.MovieDao(context);
         moviesService = new Retrofit.Builder().addConverterFactory(GsonConverterFactory.create())
                 .addCallAdapterFactory(new LiveDataCallAdapterFactory())
                 .baseUrl(SERVICE_BASE_URL).build().create(MoviesService.class);
@@ -207,7 +205,7 @@ public class MoviesRepository {
 
             @Override
             protected boolean shouldFetch(@Nullable List<Video> data) {
-                return data == null || data.isEmpty() || listRateLimit.shouldFetch(VIDEOS_FOR_MOVIE_KEY);
+                return data == null || (data.isEmpty() && listRateLimit.shouldFetch(VIDEOS_FOR_MOVIE_KEY) || listRateLimit.shouldFetch(VIDEOS_FOR_MOVIE_KEY));
             }
 
             @NonNull
@@ -240,7 +238,7 @@ public class MoviesRepository {
 
             @Override
             protected boolean shouldFetch(@Nullable List<Review> data) {
-                return data == null || data.isEmpty() || listRateLimit.shouldFetch(REVIEWS_FOR_MOVIE_KEY);
+                return data == null || (data.isEmpty() && listRateLimit.shouldFetch(REVIEWS_FOR_MOVIE_KEY)|| listRateLimit.shouldFetch(REVIEWS_FOR_MOVIE_KEY));
             }
 
             @NonNull

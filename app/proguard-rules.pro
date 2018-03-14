@@ -19,12 +19,16 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
--keepattributes Signature
 -keepclassmembernames,allowobfuscation interface * {
     @retrofit2.http.* <methods>;
 }
+-keepattributes *Annotation*, InnerClasses,SourceFile,LineNumberTable,Signature
+-keep, allowobfuscation @pl.selvin.android.autocontentprovider.annotation.Table public interface * {
+          @pl.selvin.android.autocontentprovider.annotation.Column static <fields>;
+          @pl.selvin.android.autocontentprovider.annotation.TableName static <fields>;
+}
 -keep class pl.selvin.android.popularmovies.models.** { *; }
-
+-dontwarn pl.selvin.android.syncframework.**
 -dontwarn org.codehaus.mojo.animal_sniffer.IgnoreJRERequirement
 -dontwarn com.squareup.okhttp.**
 -dontwarn okhttp3.**

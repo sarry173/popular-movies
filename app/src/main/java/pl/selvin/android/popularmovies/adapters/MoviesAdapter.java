@@ -105,6 +105,7 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.Holder> {
             Picasso.with(itemView.getContext())
                     .load(IMAGE_BASE_URL_SIZED + movie.getPosterPath())
                     .placeholder(R.drawable.placeholder_background)
+                    .error(R.drawable.ic_error)
                     .into(image, new Callback() {
                         @Override
                         public void onSuccess() {

@@ -28,7 +28,7 @@ public class RateLimiter<KEY> {
     private final ArrayMap<KEY, Long> timestamps = new ArrayMap<>();
     private final long timeout;
 
-    public RateLimiter(int timeout, TimeUnit timeUnit) {
+    public RateLimiter(@SuppressWarnings("SameParameterValue")int timeout, @SuppressWarnings("SameParameterValue") TimeUnit timeUnit) {
         this.timeout = timeUnit.toMillis(timeout);
     }
 

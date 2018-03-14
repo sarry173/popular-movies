@@ -10,17 +10,17 @@
  */
 package pl.selvin.android.popularmovies.models;
 
-import android.arch.persistence.room.Entity;
-import android.arch.persistence.room.PrimaryKey;
+import android.content.ContentValues;
+import android.database.Cursor;
 import android.support.annotation.NonNull;
 
 import com.google.gson.annotations.SerializedName;
 
-@SuppressWarnings("unused")
-@Entity(tableName = "reviews")
+import pl.selvin.android.popularmovies.data.MoviesDatabase.ReviewsDef;
+
+@SuppressWarnings("unused,WeakerAccess")
 public class Review {
     @SuppressWarnings("NullableProblems")
-    @PrimaryKey
     @SerializedName("id")
     @NonNull
     private String id;
@@ -75,5 +75,38 @@ public class Review {
 
     public void setMovieId(long movieId) {
         this.movieId = movieId;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        final Review item = (Review) o;
+        return id.equals(item.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return id.hashCode() + 7;
+    }
+
+    public ContentValues toContentValue() {
+        final ContentValues ret = new ContentValues();
+        ret.put(ReviewsDef.MOVIE_ID, movieId);
+        ret.put(ReviewsDef.ID, id);
+        ret.put(ReviewsDef.AUTHOR, author);
+        ret.put(ReviewsDef.CONTENT, content);
+        ret.put(ReviewsDef.URL, url);
+        return ret;
+    }
+
+    public static Review fromCursor(Cursor cursor) {
+        final Review ret = new Review();
+        ret.setMovieId(cursor.getLong(cursor.getColumnIndex(ReviewsDef.MOVIE_ID)));
+        ret.setId(cursor.getString(cursor.getColumnIndex(ReviewsDef.ID)));
+        ret.setAuthor(cursor.getString(cursor.getColumnIndex(ReviewsDef.AUTHOR)));
+        ret.setContent(cursor.getString(cursor.getColumnIndex(ReviewsDef.CONTENT)));
+        ret.setUrl(cursor.getString(cursor.getColumnIndex(ReviewsDef.URL)));
+        return ret;
     }
 }
