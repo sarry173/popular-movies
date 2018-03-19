@@ -192,7 +192,7 @@ public class MovieDetailsActivity extends AppCompatActivity {
                                     statusView.setVisibility(View.INVISIBLE);
                                 }
                                 imageProgress.setVisibility(View.VISIBLE);
-                                Picasso.with(imageView.getContext())
+                                Picasso.get()
                                         .load(IMAGE_BASE_URL_SIZED + movie.getPosterPath())
                                         .placeholder(R.drawable.placeholder_background)
                                         .error(R.drawable.ic_error)
@@ -205,7 +205,7 @@ public class MovieDetailsActivity extends AppCompatActivity {
                                             }
 
                                             @Override
-                                            public void onError() {
+                                            public void onError(Exception ignore) {
                                                 imageProgress.setVisibility(View.GONE);
                                                 if (savedInstanceState == null)
                                                     supportStartPostponedEnterTransition();
