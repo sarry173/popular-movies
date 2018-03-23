@@ -20,9 +20,9 @@ import android.support.annotation.NonNull;
 
 import java.util.List;
 
-import pl.selvin.android.popularmovies.repository.MoviesRepository;
 import pl.selvin.android.popularmovies.models.Movie;
 import pl.selvin.android.popularmovies.models.Resource;
+import pl.selvin.android.popularmovies.repository.MoviesRepository;
 
 public class MoviesListViewModel extends AndroidViewModel {
     private final MoviesRepository repository;

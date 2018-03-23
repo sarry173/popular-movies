@@ -26,24 +26,24 @@ public class Video {
     @PrimaryKey
     @SerializedName("id")
     @NonNull
-    private String id;
+    String id;
 
     @SerializedName("key")
-    private String key;
+    String key;
 
     @SerializedName("name")
-    private String name;
+    String name;
 
     @SerializedName("site")
-    private String site;
+    String site;
 
     @SerializedName("size")
-    private Integer size;
+    Integer size;
 
     @SerializedName("type")
-    private String type;
+    String type;
 
-    private long movieId;
+    long movieId;
 
     @NonNull
     public String getId() {
@@ -104,5 +104,18 @@ public class Video {
 
     public Uri getVideoUri() {
         return Uri.parse(YOUTUBE_BASE_URL + key);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        final Video item = (Video) o;
+        return id.equals(item.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return id.hashCode() + 7;
     }
 }

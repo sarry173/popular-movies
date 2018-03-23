@@ -12,7 +12,6 @@ package pl.selvin.android.popularmovies.repository;
 
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
-import android.arch.persistence.room.Room;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
@@ -46,6 +45,7 @@ public class MoviesRepository {
     private static final String MOVIES_TO_SHOW = "MOVIES_TO_SHOW_STRING";
     private static final String SHOW_BOTTOM_NAVIGATION = "SHOW_BOTTOM_NAVIGATION";
     private static final MoviesToShow DEFAULT_MOVIE_TO_SHOW = MoviesToShow.POPULAR;
+    private static MoviesRepository INSTANCE = null;
     private final SharedPreferences settings;
     private final AppExecutors appExecutors;
     private final MoviesDatabase.MovieDao movieDao;
@@ -53,14 +53,19 @@ public class MoviesRepository {
     private final MoviesService moviesService;
 
     private MoviesRepository(Context context) {
-        final MoviesDatabase database = Room.databaseBuilder(context.getApplicationContext(), MoviesDatabase.class, "movies")
-                .fallbackToDestructiveMigration().build();
         settings = context.getSharedPreferences(SETTINGS_KEY, 0);
         appExecutors = AppExecutors.INSTANCE;
-        movieDao = database.movieDao();
+        movieDao = MoviesDatabase.MovieDao.create(context);
         moviesService = new Retrofit.Builder().addConverterFactory(GsonConverterFactory.create())
                 .addCallAdapterFactory(new LiveDataCallAdapterFactory())
                 .baseUrl(SERVICE_BASE_URL).build().create(MoviesService.class);
+    }
+
+    public static synchronized MoviesRepository getInstance(Context context) {
+        if (INSTANCE == null) {
+            INSTANCE = new MoviesRepository(context);
+        }
+        return INSTANCE;
     }
 
     public LiveData<Resource<List<Movie>>> loadPopularMovies() {
@@ -128,15 +133,6 @@ public class MoviesRepository {
                 listRateLimit.reset(TOP_RATED_KEY);
             }
         }.asLiveData();
-    }
-
-    private static MoviesRepository INSTANCE = null;
-
-    public static synchronized MoviesRepository getInstance(Context context) {
-        if (INSTANCE == null) {
-            INSTANCE = new MoviesRepository(context);
-        }
-        return INSTANCE;
     }
 
     public LiveData<Resource<List<Movie>>> loadFavourite() {

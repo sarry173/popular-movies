@@ -19,16 +19,16 @@ import com.google.gson.annotations.SerializedName;
 public class MovieDetails {
     @PrimaryKey
     @SerializedName("id")
-    private long movieId;
+    long movieId;
 
     @SerializedName("runtime")
-    private Integer runtime;
+    Integer runtime;
 
     @SerializedName("status")
-    private String status;
+    String status;
 
     @SerializedName("tagline")
-    private String tagLine;
+    String tagLine;
 
     public long getMovieId() {
         return movieId;
@@ -60,5 +60,19 @@ public class MovieDetails {
 
     public void setTagLine(String tagLine) {
         this.tagLine = tagLine;
+    }
+
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        final MovieDetails item = (MovieDetails) o;
+        return movieId == item.movieId;
+    }
+
+    @Override
+    public int hashCode() {
+        return (int)movieId + 7;
     }
 }

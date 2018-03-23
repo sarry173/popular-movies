@@ -23,18 +23,18 @@ public class Review {
     @PrimaryKey
     @SerializedName("id")
     @NonNull
-    private String id;
+    String id;
 
     @SerializedName("author")
-    private String author;
+    String author;
 
     @SerializedName("content")
-    private String content;
+    String content;
 
     @SerializedName("url")
-    private String url;
+    String url;
 
-    private long movieId;
+    long movieId;
 
     @NonNull
     public String getId() {
@@ -75,5 +75,18 @@ public class Review {
 
     public void setMovieId(long movieId) {
         this.movieId = movieId;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        final Review item = (Review) o;
+        return id.equals(item.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return id.hashCode() + 7;
     }
 }
