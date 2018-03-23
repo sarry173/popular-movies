@@ -64,22 +64,6 @@ public class MovieDetailsActivity extends AppCompatActivity {
 
     private static final String MOVIE_ID = "MOVIE_ID";
     private static final String POSITION = "POSITION";
-
-    @SuppressWarnings("unchecked")
-    public static void startDetailsActivityForResult(@NonNull Activity context, MoviesAdapter.Holder holder, @SuppressWarnings("SameParameterValue") int code) {
-        final long movieId = holder.getItemId();
-        final int position = holder.getAdapterPosition();
-        final ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(context,
-                Pair.<View, String>create(holder.image, "image" + movieId),
-                Pair.<View, String>create(holder.title, "title" + movieId));
-        ActivityCompat.startActivityForResult(context, new Intent(context, MovieDetailsActivity.class)
-                .putExtra(MOVIE_ID, movieId).putExtra(POSITION, position), code, options.toBundle());
-    }
-
-    private MovieDetailsViewModel model;
-    private Movie movie = null;
-    private Snackbar lastSnack = null;
-
     @BindView(R.id.movie_details_request_focus)
     View requestFocusView;
     @BindView(R.id.movie_details_title)
@@ -120,6 +104,20 @@ public class MovieDetailsActivity extends AppCompatActivity {
     NestedScrollView scroll;
     @BindView(R.id.movie_details_coordinator_layout)
     View coordinatorLayout;
+    private MovieDetailsViewModel model;
+    private Movie movie = null;
+    private Snackbar lastSnack = null;
+
+    @SuppressWarnings("unchecked")
+    public static void startDetailsActivityForResult(@NonNull Activity context, MoviesAdapter.Holder holder, @SuppressWarnings("SameParameterValue") int code) {
+        final long movieId = holder.getItemId();
+        final int position = holder.getAdapterPosition();
+        final ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(context,
+                Pair.<View, String>create(holder.image, "image" + movieId),
+                Pair.<View, String>create(holder.title, "title" + movieId));
+        ActivityCompat.startActivityForResult(context, new Intent(context, MovieDetailsActivity.class)
+                .putExtra(MOVIE_ID, movieId).putExtra(POSITION, position), code, options.toBundle());
+    }
 
     @OnClick(R.id.movie_details_fav)
     void favOnClick(View view) {

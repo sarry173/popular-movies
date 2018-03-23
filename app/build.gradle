@@ -2,6 +2,7 @@ apply plugin: 'com.android.application'
 apply from: 'apikeyloader.gradle'
 
 android {
+    flavorDimensions "dataAccess"
     compileSdkVersion 27
     buildToolsVersion '27.0.0'
 
@@ -24,6 +25,15 @@ android {
             minifyEnabled true
             signingConfig signingConfigs.release
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+    productFlavors {
+        room {
+            dimension "dataAccess"
+        }
+
+        contentProvider {
+            dimension "dataAccess"
         }
     }
 }
@@ -57,15 +67,18 @@ dependencies {
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.8.1'
     //@Nullable - proguard!
     implementation 'com.google.code.findbugs:jsr305:3.0.2'
+    //room db
+    roomImplementation "android.arch.persistence.room:runtime:1.0.0"
+    roomAnnotationProcessor "android.arch.persistence.room:compiler:1.0.0"
 
     //auto-content-provider
     // this is my library for easy ContentProvider implementation
     //https://github.com/SelvinPL/SyncFrameworkAndroid/tree/master/auto-content-provider
-    implementation "pl.selvin.android:auto-content-provider:$autoContentProviderVersion"
+    contentProviderImplementation "pl.selvin.android:auto-content-provider:$autoContentProviderVersion"
     //this is not room!!!! it is just wrapper around standard android database access classes
     //it may be replaced with fx
     //implementation "pl.selvin.android:db-sqlcipher:$autoContentProviderVersion"
     //and it will replace sqlite database implementation from framework to sqlcipher
     //(of course you have to change FrameworkSQLiteOpenHelperFactory to pl.selvin.android.db.sqlcipher.SqlCipherOpenHelperFactory
-    implementation "android.arch.persistence:db-framework:$dbFrameworkVersion"
+    contentProviderImplementation "android.arch.persistence:db-framework:$dbFrameworkVersion"
 }

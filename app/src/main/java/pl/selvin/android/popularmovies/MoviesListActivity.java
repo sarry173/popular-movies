@@ -44,8 +44,6 @@ import pl.selvin.android.popularmovies.viewmodels.MoviesListViewModel.MoviesToSh
 public class MoviesListActivity extends AppCompatActivity implements MoviesAdapter.ViewHolderListener {
 
     private static final int SHOW_DETAILS = 666;
-
-    private MoviesListViewModel model;
     @BindView(R.id.toolbar)
     Toolbar toolbar;
     @BindView(R.id.movies_list_activity_list)
@@ -56,7 +54,7 @@ public class MoviesListActivity extends AppCompatActivity implements MoviesAdapt
     BottomNavigationView bottomNavigationView;
     @BindView(R.id.movies_list_activity_coordinator_layout)
     View coordinatorLayout;
-
+    private MoviesListViewModel model;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

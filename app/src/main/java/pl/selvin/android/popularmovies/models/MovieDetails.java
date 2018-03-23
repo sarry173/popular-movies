@@ -10,26 +10,25 @@
  */
 package pl.selvin.android.popularmovies.models;
 
-import android.content.ContentValues;
-import android.database.Cursor;
+import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.PrimaryKey;
 
 import com.google.gson.annotations.SerializedName;
 
-import pl.selvin.android.popularmovies.data.MoviesDatabase.MovieDetailsDef;
-
-@SuppressWarnings("unused,WeakerAccess")
+@Entity(tableName = "moviesDetails")
 public class MovieDetails {
+    @PrimaryKey
     @SerializedName("id")
-    private long movieId;
+    long movieId;
 
     @SerializedName("runtime")
-    private Integer runtime;
+    Integer runtime;
 
     @SerializedName("status")
-    private String status;
+    String status;
 
     @SerializedName("tagline")
-    private String tagLine;
+    String tagLine;
 
     public long getMovieId() {
         return movieId;
@@ -63,6 +62,7 @@ public class MovieDetails {
         this.tagLine = tagLine;
     }
 
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -74,25 +74,5 @@ public class MovieDetails {
     @Override
     public int hashCode() {
         return (int)movieId + 7;
-    }
-
-
-    public static MovieDetails fromCursor(Cursor cursor) {
-        final MovieDetails ret = new MovieDetails();
-        ret.setMovieId(cursor.getLong(cursor.getColumnIndex(MovieDetailsDef.MOVIE_ID)));
-        final int runtimeColumnIndex = cursor.getColumnIndex(MovieDetailsDef.RUNTIME);
-        ret.setRuntime(cursor.isNull(runtimeColumnIndex) ? null :  cursor.getInt(runtimeColumnIndex));
-        ret.setStatus(cursor.getString(cursor.getColumnIndex(MovieDetailsDef.STATUS)));
-        ret.setTagLine(cursor.getString(cursor.getColumnIndex(MovieDetailsDef.TAGLINE)));
-        return ret;
-    }
-
-    public ContentValues toContentValue() {
-        final ContentValues ret = new ContentValues();
-        ret.put(MovieDetailsDef.MOVIE_ID, movieId);
-        ret.put(MovieDetailsDef.RUNTIME, runtime);
-        ret.put(MovieDetailsDef.STATUS, status);
-        ret.put(MovieDetailsDef.TAGLINE, tagLine);
-        return ret;
     }
 }

@@ -10,54 +10,40 @@
  */
 package pl.selvin.android.popularmovies.models;
 
-import android.content.ContentValues;
-import android.database.Cursor;
+import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.PrimaryKey;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 
 import com.google.gson.annotations.SerializedName;
 
-import pl.selvin.android.popularmovies.data.MoviesDatabase.VideosDef;
-
 import static pl.selvin.android.popularmovies.utils.Constants.YOUTUBE_BASE_URL;
 
-@SuppressWarnings("unused,WeakerAccess")
+@SuppressWarnings("unused")
+@Entity(tableName = "videos")
 public class Video {
     @SuppressWarnings("NullableProblems")
+    @PrimaryKey
     @SerializedName("id")
     @NonNull
-    private String id;
+    String id;
 
     @SerializedName("key")
-    private String key;
+    String key;
 
     @SerializedName("name")
-    private String name;
+    String name;
 
     @SerializedName("site")
-    private String site;
+    String site;
 
     @SerializedName("size")
-    private Integer size;
+    Integer size;
 
     @SerializedName("type")
-    private String type;
+    String type;
 
-    private long movieId;
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        final Video item = (Video) o;
-        return id.equals(item.id);
-    }
-
-    @Override
-    public int hashCode() {
-        return id.hashCode() + 7;
-    }
-
+    long movieId;
 
     @NonNull
     public String getId() {
@@ -120,28 +106,16 @@ public class Video {
         return Uri.parse(YOUTUBE_BASE_URL + key);
     }
 
-    public ContentValues toContentValue() {
-        final ContentValues ret = new ContentValues();
-        ret.put(VideosDef.ID, id);
-        ret.put(VideosDef.KEY, key);
-        ret.put(VideosDef.NAME, name);
-        ret.put(VideosDef.SITE, site);
-        ret.put(VideosDef.MOVIE_ID, movieId);
-        ret.put(VideosDef.SIZE, size);
-        ret.put(VideosDef.TYPE, type);
-        return ret;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        final Video item = (Video) o;
+        return id.equals(item.id);
     }
 
-    public static Video fromCursor(Cursor cursor) {
-        final Video ret = new Video();
-        ret.setId(cursor.getString(cursor.getColumnIndex(VideosDef.ID)));
-        ret.setKey(cursor.getString(cursor.getColumnIndex(VideosDef.KEY)));
-        ret.setName(cursor.getString(cursor.getColumnIndex(VideosDef.NAME)));
-        ret.setSite(cursor.getString(cursor.getColumnIndex(VideosDef.SITE)));
-        ret.setMovieId(cursor.getLong(cursor.getColumnIndex(VideosDef.MOVIE_ID)));
-        final int sizeColumnIndex = cursor.getColumnIndex(VideosDef.SIZE);
-        ret.setSize(cursor.isNull(sizeColumnIndex) ? null :  cursor.getInt(sizeColumnIndex));
-        ret.setType(cursor.getString(cursor.getColumnIndex(VideosDef.TYPE)));
-        return ret;
+    @Override
+    public int hashCode() {
+        return id.hashCode() + 7;
     }
 }

@@ -10,65 +10,66 @@
  */
 package pl.selvin.android.popularmovies.models;
 
-import android.content.ContentValues;
-import android.database.Cursor;
+import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.Ignore;
+import android.arch.persistence.room.PrimaryKey;
 
 import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
-import pl.selvin.android.popularmovies.data.MoviesDatabase.MoviesDef;
-
-@SuppressWarnings("unused,WeakerAccess")
+@SuppressWarnings({"unused", "WeakerAccess"})
+@Entity(tableName = "movies")
 public class Movie {
-
+    @PrimaryKey
     @SerializedName("id")
-    private long id;
+    long id;
 
     @SerializedName("poster_path")
-    private String posterPath;
+    String posterPath;
 
     @SerializedName("adult")
-    private Boolean adult;
+    Boolean adult;
 
     @SerializedName("overview")
-    private String overview;
+    String overview;
 
     @SerializedName("release_date")
-    private String releaseDate;
+    String releaseDate;
 
+    @Ignore
     @SerializedName("genre_ids")
-    private List<Integer> genreIds;
+    List<Integer> genreIds;
 
     @SerializedName("original_title")
-    private String originalTitle;
+    String originalTitle;
 
     @SerializedName("original_language")
-    private String originalLanguage;
+    String originalLanguage;
 
     @SerializedName("title")
-    private String title;
+    String title;
 
     @SerializedName("backdrop_path")
-    private String backdropPath;
+    String backdropPath;
 
     @SerializedName("popularity")
-    private double popularity;
+    double popularity;
 
     @SerializedName("vote_count")
-    private int voteCount;
+    int voteCount;
 
     @SerializedName("video")
-    private Boolean video;
+    Boolean video;
 
     @SerializedName("vote_average")
-    private double voteAverage;
+    double voteAverage;
 
-    private boolean topRated;
+    boolean topRated;
 
-    private boolean popular;
+    boolean popular;
 
-    private boolean favourite;
+    boolean favourite;
 
     public boolean isTopRated() {
         return topRated;
@@ -98,24 +99,48 @@ public class Movie {
         return originalTitle;
     }
 
+    public void setOriginalTitle(String originalTitle) {
+        this.originalTitle = originalTitle;
+    }
+
     public String getOriginalLanguage() {
         return originalLanguage;
+    }
+
+    public void setOriginalLanguage(String originalLanguage) {
+        this.originalLanguage = originalLanguage;
     }
 
     public String getTitle() {
         return title;
     }
 
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
     public String getBackdropPath() {
         return backdropPath;
+    }
+
+    public void setBackdropPath(String backdropPath) {
+        this.backdropPath = backdropPath;
     }
 
     public double getPopularity() {
         return popularity;
     }
 
+    public void setPopularity(double popularity) {
+        this.popularity = popularity;
+    }
+
     public int getVoteCount() {
         return voteCount;
+    }
+
+    public void setVoteCount(int voteCount) {
+        this.voteCount = voteCount;
     }
 
     public Boolean hasVideo() {
@@ -126,8 +151,16 @@ public class Movie {
         return voteAverage;
     }
 
+    public void setVoteAverage(double voteAverage) {
+        this.voteAverage = voteAverage;
+    }
+
     public String getPosterPath() {
         return posterPath;
+    }
+
+    public void setPosterPath(String posterPath) {
+        this.posterPath = posterPath;
     }
 
     public Boolean isAdult() {
@@ -138,12 +171,24 @@ public class Movie {
         return overview;
     }
 
+    public void setOverview(String overview) {
+        this.overview = overview;
+    }
+
     public String getReleaseDate() {
         return releaseDate;
     }
 
+    public void setReleaseDate(String releaseDate) {
+        this.releaseDate = releaseDate;
+    }
+
     public List<Integer> getGenreIds() {
         return genreIds;
+    }
+
+    public void setGenreIds(List<Integer> genreIds) {
+        this.genreIds = genreIds;
     }
 
     public long getId() {
@@ -154,56 +199,12 @@ public class Movie {
         this.id = id;
     }
 
-    public void setPosterPath(String posterPath) {
-        this.posterPath = posterPath;
-    }
-
     public void setAdult(Boolean adult) {
         this.adult = adult;
     }
 
-    public void setOverview(String overview) {
-        this.overview = overview;
-    }
-
-    public void setReleaseDate(String releaseDate) {
-        this.releaseDate = releaseDate;
-    }
-
-    public void setGenreIds(List<Integer> genreIds) {
-        this.genreIds = genreIds;
-    }
-
-    public void setOriginalTitle(String originalTitle) {
-        this.originalTitle = originalTitle;
-    }
-
-    public void setOriginalLanguage(String originalLanguage) {
-        this.originalLanguage = originalLanguage;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public void setBackdropPath(String backdropPath) {
-        this.backdropPath = backdropPath;
-    }
-
-    public void setPopularity(double popularity) {
-        this.popularity = popularity;
-    }
-
-    public void setVoteCount(int voteCount) {
-        this.voteCount = voteCount;
-    }
-
     public void setVideo(Boolean video) {
         this.video = video;
-    }
-
-    public void setVoteAverage(double voteAverage) {
-        this.voteAverage = voteAverage;
     }
 
     @Override
@@ -217,49 +218,5 @@ public class Movie {
     @Override
     public int hashCode() {
         return (int) id;
-    }
-
-    public static Movie fromCursor(Cursor cursor) {
-        final Movie ret = new Movie();
-        ret.setId(cursor.getLong(cursor.getColumnIndex(MoviesDef.ID)));
-        ret.setTitle(cursor.getString(cursor.getColumnIndex(MoviesDef.TITLE)));
-        ret.setOverview(cursor.getString(cursor.getColumnIndex(MoviesDef.OVERVIEW)));
-        ret.setReleaseDate(cursor.getString(cursor.getColumnIndex(MoviesDef.RELEASE_DATE)));
-        ret.setBackdropPath(cursor.getString(cursor.getColumnIndex(MoviesDef.BACKDROP_PATH)));
-        ret.setTopRated(cursor.getInt(cursor.getColumnIndex(MoviesDef.TOP_RATED)) > 0);
-        ret.setFavourite(cursor.getInt(cursor.getColumnIndex(MoviesDef.FAVOURITE)) > 0);
-        ret.setPopular(cursor.getInt(cursor.getColumnIndex(MoviesDef.POPULAR)) > 0);
-        ret.setVoteCount(cursor.getInt(cursor.getColumnIndex(MoviesDef.VOTE_COUNT)));
-        ret.setVoteAverage(cursor.getDouble(cursor.getColumnIndex(MoviesDef.VOTE_AVERAGE)));
-        ret.setPopularity(cursor.getDouble(cursor.getColumnIndex(MoviesDef.POPULARITY)));
-        ret.setPosterPath(cursor.getString(cursor.getColumnIndex(MoviesDef.POSTER_PATH)));
-        final int adultColumnIndex = cursor.getColumnIndex(MoviesDef.ADULT);
-        ret.setAdult(cursor.isNull(adultColumnIndex) ? null : (cursor.getInt(adultColumnIndex) > 0));
-        ret.setOriginalTitle(cursor.getString(cursor.getColumnIndex(MoviesDef.ORIGINAL_TITLE)));
-        ret.setOriginalLanguage(cursor.getString(cursor.getColumnIndex(MoviesDef.ORIGINAL_LANGUAGE)));
-        final int videoColumnIndex = cursor.getColumnIndex(MoviesDef.VIDEO);
-        ret.setVideo(cursor.isNull(videoColumnIndex) ? null : (cursor.getInt(videoColumnIndex) > 0));
-        return ret;
-    }
-
-    public ContentValues toContentValue() {
-        final ContentValues ret = new ContentValues();
-        ret.put(MoviesDef.ID, id);
-        ret.put(MoviesDef.TITLE, title);
-        ret.put(MoviesDef.OVERVIEW, overview);
-        ret.put(MoviesDef.RELEASE_DATE, releaseDate);
-        ret.put(MoviesDef.BACKDROP_PATH, backdropPath);
-        ret.put(MoviesDef.TOP_RATED, topRated ? 1 : 0);
-        ret.put(MoviesDef.FAVOURITE, favourite ? 1 : 0);
-        ret.put(MoviesDef.POPULAR, popular ? 1 : 0);
-        ret.put(MoviesDef.VOTE_COUNT, voteCount);
-        ret.put(MoviesDef.VOTE_AVERAGE, voteAverage);
-        ret.put(MoviesDef.POPULARITY, popularity);
-        ret.put(MoviesDef.POSTER_PATH, posterPath);
-        ret.put(MoviesDef.ADULT, adult == null ? null : adult ? 1 : 0);
-        ret.put(MoviesDef.ORIGINAL_TITLE, originalTitle);
-        ret.put(MoviesDef.ORIGINAL_LANGUAGE, originalLanguage);
-        ret.put(MoviesDef.VIDEO, video == null ? null : video ? 1 : 0);
-        return ret;
     }
 }

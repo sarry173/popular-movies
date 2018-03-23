@@ -40,12 +40,12 @@ import retrofit2.converter.gson.GsonConverterFactory;
 import static pl.selvin.android.popularmovies.utils.Constants.LANG;
 import static pl.selvin.android.popularmovies.utils.Constants.SERVICE_BASE_URL;
 
-//Room => ContentProvider refactoring - fortunately refactoring didn't affect this class
 public class MoviesRepository {
     private static final String SETTINGS_KEY = "MOVIES_LIST_SETTINGS";
     private static final String MOVIES_TO_SHOW = "MOVIES_TO_SHOW_STRING";
     private static final String SHOW_BOTTOM_NAVIGATION = "SHOW_BOTTOM_NAVIGATION";
     private static final MoviesToShow DEFAULT_MOVIE_TO_SHOW = MoviesToShow.POPULAR;
+    private static MoviesRepository INSTANCE = null;
     private final SharedPreferences settings;
     private final AppExecutors appExecutors;
     private final MoviesDatabase.MovieDao movieDao;
@@ -55,10 +55,17 @@ public class MoviesRepository {
     private MoviesRepository(Context context) {
         settings = context.getSharedPreferences(SETTINGS_KEY, 0);
         appExecutors = AppExecutors.INSTANCE;
-        movieDao = new MoviesDatabase.MovieDao(context);
+        movieDao = MoviesDatabase.MovieDao.create(context);
         moviesService = new Retrofit.Builder().addConverterFactory(GsonConverterFactory.create())
                 .addCallAdapterFactory(new LiveDataCallAdapterFactory())
                 .baseUrl(SERVICE_BASE_URL).build().create(MoviesService.class);
+    }
+
+    public static synchronized MoviesRepository getInstance(Context context) {
+        if (INSTANCE == null) {
+            INSTANCE = new MoviesRepository(context);
+        }
+        return INSTANCE;
     }
 
     public LiveData<Resource<List<Movie>>> loadPopularMovies() {
@@ -126,15 +133,6 @@ public class MoviesRepository {
                 listRateLimit.reset(TOP_RATED_KEY);
             }
         }.asLiveData();
-    }
-
-    private static MoviesRepository INSTANCE = null;
-
-    public static synchronized MoviesRepository getInstance(Context context) {
-        if (INSTANCE == null) {
-            INSTANCE = new MoviesRepository(context);
-        }
-        return INSTANCE;
     }
 
     public LiveData<Resource<List<Movie>>> loadFavourite() {
@@ -205,7 +203,7 @@ public class MoviesRepository {
 
             @Override
             protected boolean shouldFetch(@Nullable List<Video> data) {
-                return data == null || (data.isEmpty() && listRateLimit.shouldFetch(VIDEOS_FOR_MOVIE_KEY) || listRateLimit.shouldFetch(VIDEOS_FOR_MOVIE_KEY));
+                return data == null || data.isEmpty() || listRateLimit.shouldFetch(VIDEOS_FOR_MOVIE_KEY);
             }
 
             @NonNull
@@ -238,7 +236,7 @@ public class MoviesRepository {
 
             @Override
             protected boolean shouldFetch(@Nullable List<Review> data) {
-                return data == null || (data.isEmpty() && listRateLimit.shouldFetch(REVIEWS_FOR_MOVIE_KEY)|| listRateLimit.shouldFetch(REVIEWS_FOR_MOVIE_KEY));
+                return data == null || data.isEmpty() || listRateLimit.shouldFetch(REVIEWS_FOR_MOVIE_KEY);
             }
 
             @NonNull
