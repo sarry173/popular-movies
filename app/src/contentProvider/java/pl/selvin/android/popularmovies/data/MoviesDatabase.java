@@ -35,7 +35,6 @@ import pl.selvin.android.popularmovies.models.Review;
 import pl.selvin.android.popularmovies.models.ReviewHelper;
 import pl.selvin.android.popularmovies.models.Video;
 import pl.selvin.android.popularmovies.models.VideoHelper;
-import pl.selvin.android.popularmovies.utils.CursorLoaderLiveData;
 
 //Room => ContentProvider refactoring - this class was most affected - but with help of CursorLoaderLiveData
 //we mostly didn't have to change the rest of the app :)

@@ -11,8 +11,11 @@
 
 package pl.selvin.android.popularmovies.models;
 
-public class MovieWithDetails {
-    public Movie movie;
+import android.arch.persistence.room.Embedded;
 
+public class MovieWithDetails {
+    @Embedded
+    public Movie movie;
+    @Embedded
     public MovieDetails details;
 }

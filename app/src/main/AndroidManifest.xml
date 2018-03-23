@@ -33,13 +33,6 @@
         <activity
             android:name=".MovieDetailsActivity"
             android:theme="@style/AppThemeTranslucent" />
-
-        <provider
-            android:name=".data.MoviesContentProvider"
-            android:authorities="${applicationId}"
-            android:exported="true"
-            android:multiprocess="false"
-            tools:ignore="ExportedContentProvider" />
     </application>
 
 </manifest>

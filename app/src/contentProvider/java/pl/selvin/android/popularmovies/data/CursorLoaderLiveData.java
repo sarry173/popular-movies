@@ -9,7 +9,7 @@
  language governing permissions and limitations under the License.
  */
 
-package pl.selvin.android.popularmovies.utils;
+package pl.selvin.android.popularmovies.data;
 
 
 import android.annotation.SuppressLint;
