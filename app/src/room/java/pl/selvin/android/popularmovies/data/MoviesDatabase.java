@@ -31,7 +31,7 @@ import pl.selvin.android.popularmovies.models.MovieWithDetails;
 import pl.selvin.android.popularmovies.models.Review;
 import pl.selvin.android.popularmovies.models.Video;
 
-@Database(entities = {Movie.class, MovieDetails.class, Video.class, Review.class}, version = 7, exportSchema = false)
+@Database(entities = {Movie.class, MovieDetails.class, Video.class, Review.class}, version = 8, exportSchema = false)
 public abstract class MoviesDatabase extends RoomDatabase {
     public abstract MovieDao movieDao();
 
@@ -56,7 +56,7 @@ public abstract class MoviesDatabase extends RoomDatabase {
         @Query("SELECT * FROM movies WHERE id=:id")
         protected abstract Movie loadMovieS(long id);
 
-        @Query("SELECT * FROM movies WHERE popular=1")
+        @Query("SELECT * FROM movies WHERE popular=1 ORDER BY popularity DESC")
         public abstract LiveData<List<Movie>> loadPopularMovies();
 
         @Query("SELECT * FROM videos WHERE movieId=:movieId")
@@ -84,7 +84,7 @@ public abstract class MoviesDatabase extends RoomDatabase {
             insertAllMovies(movies);
         }
 
-        @Query("SELECT * FROM movies WHERE topRated=1")
+        @Query("SELECT * FROM movies WHERE topRated=1 ORDER BY voteAverage DESC")
         public abstract LiveData<List<Movie>> loadTopRatedMovies();
 
         @SuppressWarnings("UnusedReturnValue")

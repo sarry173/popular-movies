@@ -12,6 +12,7 @@
 package pl.selvin.android.popularmovies.data;
 
 import android.arch.persistence.db.SimpleSQLiteQuery;
+import android.arch.persistence.db.SupportSQLiteDatabase;
 import android.arch.persistence.db.SupportSQLiteOpenHelper;
 import android.arch.persistence.db.SupportSQLiteQuery;
 import android.arch.persistence.db.framework.FrameworkSQLiteOpenHelperFactory;
@@ -72,6 +73,27 @@ public class MoviesContentProvider extends AutoContentProvider {
         matcher.addURI(AUTHORITY, MoviesDef.MOVIES_WITH_DETAILS, MOVIES_WITH_DETAILS);
         MAP_MOVIES_WITH_DETAILS.putAll(HELPER.getTableFromType(MoviesDef.TABLE_NAME).map);
         MAP_MOVIES_WITH_DETAILS.putAll(HELPER.getTableFromType(MovieDetailsDef.TABLE_NAME).map);
+    }
+
+    @Override
+    protected SupportSQLiteOpenHelper.Callback getHelperCallback() {
+        final SupportSQLiteOpenHelper.Callback defaultCallback = super.getHelperCallback();
+        return new SupportSQLiteOpenHelper.Callback(DATABASE_VERSION) {
+            @Override
+            public void onCreate(SupportSQLiteDatabase db) {
+                defaultCallback.onCreate(db);
+            }
+
+            @Override
+            public void onUpgrade(SupportSQLiteDatabase db, int oldVersion, int newVersion) {
+                defaultCallback.onUpgrade(db, oldVersion, newVersion);
+            }
+
+            @Override
+            public void onDowngrade(SupportSQLiteDatabase db, int oldVersion, int newVersion) {
+
+            }
+        };
     }
 
     //overriding bulkInset for some special cases
