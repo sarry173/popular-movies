@@ -40,6 +40,7 @@ import pl.selvin.android.popularmovies.models.Status;
 import pl.selvin.android.popularmovies.viewmodels.MoviesListViewModel;
 import pl.selvin.android.popularmovies.viewmodels.MoviesListViewModel.MoviesToShow;
 
+@SuppressWarnings("WeakerAccess")
 public class MoviesListActivity extends AppCompatActivity implements MoviesAdapter.ViewHolderListener {
 
     private static final int SHOW_DETAILS = 666;

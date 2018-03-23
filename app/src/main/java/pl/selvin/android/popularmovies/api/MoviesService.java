@@ -24,19 +24,19 @@ import static pl.selvin.android.popularmovies.utils.Constants.API_KEY;
 
 public interface MoviesService {
     @GET("movie/popular?api_key=" + API_KEY)
-    LiveData<ApiResponse<MoviesServiceResponse<Movie>>> getPopularMovies(@Query("language") String language, @SuppressWarnings("SameParameterValue") @Query("page") Integer page,
+    LiveData<ApiResponse<MoviesServiceResponse<Movie>>> getPopularMovies(@SuppressWarnings("SameParameterValue") @Query("language") String language, @SuppressWarnings("SameParameterValue") @Query("page") Integer page,
                                                                          @SuppressWarnings("SameParameterValue") @Query("region") String region);
 
     @GET("movie/top_rated?api_key=" + API_KEY)
-    LiveData<ApiResponse<MoviesServiceResponse<Movie>>> getTopRatedMovies(@Query("language") String language, @SuppressWarnings("SameParameterValue") @Query("page") Integer page,
+    LiveData<ApiResponse<MoviesServiceResponse<Movie>>> getTopRatedMovies(@SuppressWarnings("SameParameterValue") @Query("language") String language, @SuppressWarnings("SameParameterValue") @Query("page") Integer page,
                                                                           @SuppressWarnings("SameParameterValue") @Query("region") String region);
 
     @GET("movie/{movie_id}?api_key=" + API_KEY)
-    LiveData<ApiResponse<MovieDetails>> getMovieDetails(@Path("movie_id") long id, @Query("language") String language);
+    LiveData<ApiResponse<MovieDetails>> getMovieDetails(@Path("movie_id") long id, @SuppressWarnings("SameParameterValue") @Query("language") String language);
 
     @GET("movie/{movie_id}/videos?api_key=" + API_KEY)
-    LiveData<ApiResponse<MoviesServiceResponse<Video>>> getVideosForMovie(@Path("movie_id") long id, @Query("language") String language);
+    LiveData<ApiResponse<MoviesServiceResponse<Video>>> getVideosForMovie(@Path("movie_id") long id, @SuppressWarnings("SameParameterValue") @Query("language") String language);
 
     @GET("movie/{movie_id}/reviews?api_key=" + API_KEY)
-    LiveData<ApiResponse<MoviesServiceResponse<Review>>> getReviewsForMovie(@Path("movie_id") long id, @Query("language") String language);
+    LiveData<ApiResponse<MoviesServiceResponse<Review>>> getReviewsForMovie(@Path("movie_id") long id, @SuppressWarnings("SameParameterValue") @Query("language") String language);
 }

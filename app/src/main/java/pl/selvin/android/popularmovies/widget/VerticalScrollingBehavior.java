@@ -67,6 +67,7 @@ public abstract class VerticalScrollingBehavior<V extends View> extends Coordina
      * @param currentOverScroll Unconsumed value, negative or positive based on the direction;
      * @param totalOverScroll   Cumulative value for current direction
      */
+    @SuppressWarnings("EmptyMethod")
     public abstract void onNestedVerticalOverScroll(CoordinatorLayout coordinatorLayout, V child, @ScrollDirection int direction, int currentOverScroll, int totalOverScroll);
 
     /**
@@ -118,5 +119,6 @@ public abstract class VerticalScrollingBehavior<V extends View> extends Coordina
         return onNestedDirectionFling(coordinatorLayout, child, target, velocityX, velocityY, mScrollDirection);
     }
 
+    @SuppressWarnings("SameReturnValue")
     protected abstract boolean onNestedDirectionFling(CoordinatorLayout coordinatorLayout, V child, View target, float velocityX, float velocityY, @ScrollDirection int scrollDirection);
 }

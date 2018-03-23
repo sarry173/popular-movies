@@ -34,10 +34,10 @@ import retrofit2.Response;
  *
  * @param <R>
  */
+@SuppressWarnings("WeakerAccess")
 public class LiveDataCallAdapter<R> implements CallAdapter<R, LiveData<ApiResponse<R>>> {
     private final Type responseType;
 
-    @SuppressWarnings("WeakerAccess")
     public LiveDataCallAdapter(Type responseType) {
         this.responseType = responseType;
     }

@@ -23,6 +23,7 @@ import java.io.IOException;
 import okhttp3.ResponseBody;
 import retrofit2.Response;
 
+@SuppressWarnings("WeakerAccess")
 public class ApiResponse<T> {
     public final int code;
     @Nullable

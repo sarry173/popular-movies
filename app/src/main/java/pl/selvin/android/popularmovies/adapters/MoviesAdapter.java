@@ -102,9 +102,10 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.Holder> {
             progress.setVisibility(View.VISIBLE);
             ViewCompat.setTransitionName(title, "title" + getItemId());
             ViewCompat.setTransitionName(image, "image" + getItemId());
-            Picasso.with(itemView.getContext())
+            Picasso.get()
                     .load(IMAGE_BASE_URL_SIZED + movie.getPosterPath())
                     .placeholder(R.drawable.placeholder_background)
+                    .error(R.drawable.ic_error)
                     .into(image, new Callback() {
                         @Override
                         public void onSuccess() {
@@ -112,7 +113,7 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.Holder> {
                         }
 
                         @Override
-                        public void onError() {
+                        public void onError(Exception e) {
                             progress.setVisibility(View.GONE);
                         }
                     });

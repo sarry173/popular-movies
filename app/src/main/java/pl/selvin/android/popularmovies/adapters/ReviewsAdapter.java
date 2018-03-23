@@ -1,5 +1,6 @@
 package pl.selvin.android.popularmovies.adapters;
 
+import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -9,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.List;
 
@@ -69,7 +71,11 @@ public class ReviewsAdapter extends RecyclerView.Adapter<ReviewsAdapter.ViewHold
         @OnClick(R.id.reviews_list_item_decorator)
         void onClick(View view) {
             final Context context = view.getContext();
-            context.startActivity(new Intent(Intent.ACTION_VIEW).setData((Uri) author.getTag()));
+            try {
+                context.startActivity(new Intent(Intent.ACTION_VIEW).setData((Uri) author.getTag()));
+            } catch (ActivityNotFoundException ignore) {
+                Toast.makeText(context, R.string.error_activity_not_found, Toast.LENGTH_SHORT).show();
+            }
         }
     }
 }

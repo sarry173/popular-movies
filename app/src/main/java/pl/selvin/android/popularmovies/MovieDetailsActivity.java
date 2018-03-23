@@ -59,13 +59,14 @@ import pl.selvin.android.popularmovies.viewmodels.MovieDetailsViewModel;
 
 import static pl.selvin.android.popularmovies.utils.Constants.IMAGE_BASE_URL_SIZED;
 
+@SuppressWarnings("WeakerAccess")
 public class MovieDetailsActivity extends AppCompatActivity {
 
     private static final String MOVIE_ID = "MOVIE_ID";
     private static final String POSITION = "POSITION";
 
     @SuppressWarnings("unchecked")
-    public static void startDetailsActivityForResult(@NonNull Activity context, MoviesAdapter.Holder holder, int code) {
+    public static void startDetailsActivityForResult(@NonNull Activity context, MoviesAdapter.Holder holder, @SuppressWarnings("SameParameterValue") int code) {
         final long movieId = holder.getItemId();
         final int position = holder.getAdapterPosition();
         final ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(context,
@@ -142,8 +143,6 @@ public class MovieDetailsActivity extends AppCompatActivity {
     public void onCreate(@Nullable final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.movie_details_activity);
-        if (savedInstanceState == null)
-            supportPostponeEnterTransition();
         ButterKnife.bind(this);
         setSupportActionBar(toolbar);
         final ActionBar actionBar = getSupportActionBar();
@@ -157,7 +156,6 @@ public class MovieDetailsActivity extends AppCompatActivity {
             ViewCompat.setTransitionName(titleView, "title" + id);
             if (id != -1) {
                 setTitle(R.string.movie_detail_title);
-                imageProgress.setVisibility(View.VISIBLE);
                 model = ViewModelProviders.of(this).get(MovieDetailsViewModel.class);
                 model.getMovieDetails(id).observe(this, new Observer<Resource<MovieWithDetails>>() {
                     @Override
@@ -193,9 +191,11 @@ public class MovieDetailsActivity extends AppCompatActivity {
                                     durationView.setText(getString(R.string.movie_details_duration_unknown));
                                     statusView.setVisibility(View.INVISIBLE);
                                 }
-                                Picasso.with(imageView.getContext())
+                                imageProgress.setVisibility(View.VISIBLE);
+                                Picasso.get()
                                         .load(IMAGE_BASE_URL_SIZED + movie.getPosterPath())
                                         .placeholder(R.drawable.placeholder_background)
+                                        .error(R.drawable.ic_error)
                                         .into(imageView, new com.squareup.picasso.Callback() {
                                             @Override
                                             public void onSuccess() {
@@ -205,7 +205,7 @@ public class MovieDetailsActivity extends AppCompatActivity {
                                             }
 
                                             @Override
-                                            public void onError() {
+                                            public void onError(Exception ignore) {
                                                 imageProgress.setVisibility(View.GONE);
                                                 if (savedInstanceState == null)
                                                     supportStartPostponedEnterTransition();

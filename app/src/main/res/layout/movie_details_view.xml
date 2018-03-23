@@ -108,6 +108,13 @@
         app:layout_constraintStart_toEndOf="@+id/movie_details_guideline_50p"
         app:layout_constraintTop_toBottomOf="@+id/movie_details_status" />
 
+    <android.support.constraint.Barrier
+        android:id="@+id/movie_details_top_barrier"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:barrierDirection="bottom"
+        app:constraint_referenced_ids="movie_details_fav,movie_details_image" />
+
     <TextView
         android:id="@+id/movie_details_description"
         android:layout_width="0dp"
@@ -117,7 +124,7 @@
         android:layout_marginTop="8dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/movie_details_image"
+        app:layout_constraintTop_toBottomOf="@id/movie_details_top_barrier"
         tools:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur faucibus nunc a augue vehicula, at commodo nisi interdum. " />
 
     <android.support.constraint.Barrier
