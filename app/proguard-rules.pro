@@ -22,7 +22,7 @@
 -keepclassmembernames,allowobfuscation interface * {
     @retrofit2.http.* <methods>;
 }
--keepattributes *Annotation*, InnerClasses,SourceFile,LineNumberTable,Signature
+-keepattributes *Annotation*, InnerClasses, SourceFile, LineNumberTable, Signature, Exceptions
 -keep, allowobfuscation @pl.selvin.android.autocontentprovider.annotation.Table public interface * {
           @pl.selvin.android.autocontentprovider.annotation.Column static <fields>;
           @pl.selvin.android.autocontentprovider.annotation.TableName static <fields>;
@@ -32,4 +32,10 @@
 -dontwarn org.codehaus.mojo.animal_sniffer.IgnoreJRERequirement
 -dontwarn com.squareup.okhttp.**
 -dontwarn okhttp3.**
+-dontnote okhttp3.**
 -dontwarn okio.**
+-dontnote com.google.gson.**
+-dontnote pl.selvin.android.autocontentprovider.annotation.**
+-dontnote org.apache.http.**
+-dontnote android.net.http.**
+-dontnote retrofit2.Platform

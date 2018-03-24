@@ -35,11 +35,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical|center_horizontal"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="@+id/movie_details_image"
         app:layout_constraintEnd_toEndOf="@+id/movie_details_image"
         app:layout_constraintStart_toStartOf="@+id/movie_details_image"
-        app:layout_constraintTop_toTopOf="@+id/movie_details_image"
-        tools:visibility="gone" />
+        app:layout_constraintTop_toTopOf="@+id/movie_details_image" />
 
     <android.support.constraint.Guideline
         android:id="@+id/movie_details_guideline_50p"

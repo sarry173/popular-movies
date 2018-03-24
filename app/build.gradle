@@ -19,6 +19,11 @@ android {
         buildConfigField "String", "THEMOVIEDB_ORG_KEY", THEMOVIEDB_ORG_KEY
     }
 
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
     buildTypes {
         release {
             shrinkResources true
@@ -49,7 +54,7 @@ dependencies {
     implementation "com.android.support:support-v4:$supportVersion"
     implementation "com.android.support:design:$supportVersion"
     //constraint
-    implementation 'com.android.support.constraint:constraint-layout:1.1.0-beta5'
+    implementation 'com.android.support.constraint:constraint-layout:1.1.0-beta6'
     // ViewModel and LiveData
     implementation "android.arch.lifecycle:extensions:1.1.0"
     annotationProcessor "android.arch.lifecycle:compiler:1.1.0"
@@ -57,9 +62,11 @@ dependencies {
     implementation 'com.squareup.okio:okio:1.14.0'
     //okhttp
     implementation 'com.squareup.okhttp3:okhttp:3.10.0'
+    //gson
+    implementation 'com.google.code.gson:gson:2.8.2'
     //retrofit2
-    implementation 'com.squareup.retrofit2:retrofit:2.3.0'
-    implementation 'com.squareup.retrofit2:converter-gson:2.3.0'
+    implementation 'com.squareup.retrofit2:retrofit:2.4.0'
+    implementation 'com.squareup.retrofit2:converter-gson:2.4.0'
     //picasso
     implementation 'com.squareup.picasso:picasso:2.71828'
     //butterknife
@@ -68,8 +75,8 @@ dependencies {
     //@Nullable - proguard!
     implementation 'com.google.code.findbugs:jsr305:3.0.2'
     //room db
-    roomImplementation "android.arch.persistence.room:runtime:1.0.0"
-    roomAnnotationProcessor "android.arch.persistence.room:compiler:1.0.0"
+    roomImplementation "android.arch.persistence.room:runtime:1.1.0-beta1"
+    roomAnnotationProcessor "android.arch.persistence.room:compiler:1.1.0-beta1"
 
     //auto-content-provider
     // this is my library for easy ContentProvider implementation
