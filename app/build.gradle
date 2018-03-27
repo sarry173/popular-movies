@@ -4,7 +4,7 @@ apply from: 'apikeyloader.gradle'
 android {
     flavorDimensions "dataAccess"
     compileSdkVersion 27
-    buildToolsVersion '27.0.0'
+    buildToolsVersion '27.0.3'
 
     signingConfigs {
         release
@@ -48,6 +48,7 @@ apply from: 'signing.gradle'
 def supportVersion = '27.1.0'
 def autoContentProviderVersion = '0.10.2'
 def dbFrameworkVersion = '1.0.0'
+def lifecycleVersion = '1.1.1'
 
 dependencies {
     //support
@@ -56,8 +57,8 @@ dependencies {
     //constraint
     implementation 'com.android.support.constraint:constraint-layout:1.1.0-beta6'
     // ViewModel and LiveData
-    implementation "android.arch.lifecycle:extensions:1.1.0"
-    annotationProcessor "android.arch.lifecycle:compiler:1.1.0"
+    implementation "android.arch.lifecycle:extensions:$lifecycleVersion"
+    annotationProcessor "android.arch.lifecycle:compiler:$lifecycleVersion"
     //okio
     implementation 'com.squareup.okio:okio:1.14.0'
     //okhttp

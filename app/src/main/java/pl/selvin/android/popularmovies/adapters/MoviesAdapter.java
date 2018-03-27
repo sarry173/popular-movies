@@ -117,6 +117,7 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.Holder> {
                             progress.setVisibility(View.GONE);
                         }
                     });
+            Picasso.get().load(IMAGE_BASE_URL_SIZED + movie.getBackdropPath()).priority(Picasso.Priority.LOW).fetch();
         }
 
         @OnClick(R.id.movies_list_item_decorator)
