@@ -268,12 +268,7 @@ public class MoviesRepository {
 
     public LiveData<Integer> saveMovie(final Movie movie) {
         final MutableLiveData<Integer> ret = new MutableLiveData<>();
-        appExecutors.diskIO().execute(new Runnable() {
-            @Override
-            public void run() {
-                ret.postValue(movieDao.updateMovie(movie));
-            }
-        });
+        appExecutors.diskIO().execute(() -> ret.postValue(movieDao.updateMovie(movie)));
         return ret;
     }
 

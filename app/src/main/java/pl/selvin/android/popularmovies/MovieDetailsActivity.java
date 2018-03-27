@@ -12,7 +12,6 @@
 package pl.selvin.android.popularmovies;
 
 import android.app.Activity;
-import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.os.Bundle;
@@ -50,9 +49,7 @@ import pl.selvin.android.popularmovies.adapters.ReviewsAdapter;
 import pl.selvin.android.popularmovies.adapters.VideosAdapter;
 import pl.selvin.android.popularmovies.models.Movie;
 import pl.selvin.android.popularmovies.models.MovieDetails;
-import pl.selvin.android.popularmovies.models.Review;
 import pl.selvin.android.popularmovies.models.Status;
-import pl.selvin.android.popularmovies.models.Video;
 import pl.selvin.android.popularmovies.viewmodels.MovieDetailsViewModel;
 
 import static pl.selvin.android.popularmovies.utils.Constants.IMAGE_BASE_URL_SIZED;
@@ -121,20 +118,18 @@ public class MovieDetailsActivity extends AppCompatActivity {
                 .putExtra(MOVIE_ID, movieId).putExtra(POSITION, position), code, options.toBundle());
     }
 
+    @SuppressWarnings("unused")
     @OnClick(R.id.movie_details_fav)
     void favOnClick(View view) {
         if (movie != null) {
             final boolean fav = !movie.isFavourite();
             movie.setFavourite(fav);
-            model.saveMovie(movie).observe(this, new Observer<Integer>() {
-                @Override
-                public void onChanged(@Nullable Integer integer) {
-                    if (lastSnack != null)
-                        lastSnack.dismiss();
-                    lastSnack = Snackbar.make(coordinatorLayout, fav ? "Movie added to favorites"
-                            : "Movie removed from favorites", Snackbar.LENGTH_SHORT);
-                    lastSnack.show();
-                }
+            model.saveMovie(movie).observe(this, integer -> {
+                if (lastSnack != null)
+                    lastSnack.dismiss();
+                lastSnack = Snackbar.make(coordinatorLayout, fav ? "Movie added to favorites"
+                        : "Movie removed from favorites", Snackbar.LENGTH_SHORT);
+                lastSnack.show();
             });
         }
     }

@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <dimen name="content_margin">60dp</dimen>
-    <dimen name="title_padding">76dp</dimen>
     <integer name="movies_span_count">5</integer>
     <integer name="videos_span_count">2</integer>
 </resources>

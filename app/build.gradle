@@ -58,7 +58,7 @@ dependencies {
     implementation 'com.android.support.constraint:constraint-layout:1.1.0-beta6'
     // ViewModel and LiveData
     implementation "android.arch.lifecycle:extensions:$lifecycleVersion"
-    annotationProcessor "android.arch.lifecycle:compiler:$lifecycleVersion"
+    implementation "android.arch.lifecycle:common-java8:$lifecycleVersion"
     //okio
     implementation 'com.squareup.okio:okio:1.14.0'
     //okhttp

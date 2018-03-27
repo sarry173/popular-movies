@@ -22,5 +22,4 @@ public interface Constants {
     String IMAGE_BASE_URL = "http://image.tmdb.org/t/p/";
     String IMAGE_BASE_URL_SIZED = IMAGE_BASE_URL + "w342/";
     String YOUTUBE_BASE_URL  = "https://youtu.be/";
-    String AUTHORITY = BuildConfig.APPLICATION_ID;
 }

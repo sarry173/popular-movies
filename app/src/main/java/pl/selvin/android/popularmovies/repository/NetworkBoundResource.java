@@ -18,7 +18,6 @@ package pl.selvin.android.popularmovies.repository;
 
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MediatorLiveData;
-import android.arch.lifecycle.Observer;
 import android.support.annotation.MainThread;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -47,22 +46,14 @@ public abstract class NetworkBoundResource<ResultType, RequestType> {
     @MainThread
     public NetworkBoundResource(AppExecutors appExecutors) {
         this.appExecutors = appExecutors;
-        result.setValue(Resource.loading((ResultType) null));
+        result.setValue(Resource.loading(null));
         final LiveData<ResultType> dbSource = loadFromDb();
-        result.addSource(dbSource, new Observer<ResultType>() {
-            @Override
-            public void onChanged(@Nullable ResultType data) {
-                result.removeSource(dbSource);
-                if (shouldFetch(data)) {
-                    fetchFromNetwork(dbSource);
-                } else {
-                    result.addSource(dbSource, new Observer<ResultType>() {
-                        @Override
-                        public void onChanged(@Nullable ResultType newData) {
-                            setValue(Resource.success(newData));
-                        }
-                    });
-                }
+        result.addSource(dbSource, data -> {
+            result.removeSource(dbSource);
+            if (shouldFetch(data)) {
+                fetchFromNetwork(dbSource);
+            } else {
+                result.addSource(dbSource, newData -> setValue(Resource.success(newData)));
             }
         });
     }
@@ -77,48 +68,24 @@ public abstract class NetworkBoundResource<ResultType, RequestType> {
     private void fetchFromNetwork(final LiveData<ResultType> dbSource) {
         final LiveData<ApiResponse<RequestType>> apiResponse = createCall();
         // we re-attach dbSource as a new source, it will dispatch its latest value quickly
-        result.addSource(dbSource, new Observer<ResultType>() {
-            @Override
-            public void onChanged(@Nullable ResultType newData) {
-                setValue(Resource.loading(newData));
-            }
-        });
-        result.addSource(apiResponse, new Observer<ApiResponse<RequestType>>() {
-            @Override
-            public void onChanged(@Nullable final ApiResponse<RequestType> response) {
-                result.removeSource(apiResponse);
-                result.removeSource(dbSource);
-                //noinspection ConstantConditions
-                if (response.isSuccessful()) {
-                    appExecutors.diskIO().execute(new Runnable() {
-                        @Override
-                        public void run() {
-                            saveCallResult(processResponse(response));
-                            appExecutors.mainThread().execute(new Runnable() {
-                                @Override
-                                public void run() {
-                                    // we specially request a new live data,
-                                    // otherwise we will get immediately last cached value,
-                                    // which may not be updated with latest results received from network.
-                                    result.addSource(dbSource, new Observer<ResultType>() {
-                                        @Override
-                                        public void onChanged(@Nullable ResultType newData) {
-                                            setValue(Resource.success(newData));
-                                        }
-                                    });
-                                }
-                            });
-                        }
+        result.addSource(dbSource, newData -> setValue(Resource.loading(newData)));
+        result.addSource(apiResponse, response -> {
+            result.removeSource(apiResponse);
+            result.removeSource(dbSource);
+            //noinspection ConstantConditions
+            if (response.isSuccessful()) {
+                appExecutors.diskIO().execute(() -> {
+                    saveCallResult(processResponse(response));
+                    appExecutors.mainThread().execute(() -> {
+                        // we specially request a new live data,
+                        // otherwise we will get immediately last cached value,
+                        // which may not be updated with latest results received from network.
+                        result.addSource(dbSource, newData -> setValue(Resource.success(newData)));
                     });
-                } else {
-                    onFetchFailed();
-                    result.addSource(dbSource, new Observer<ResultType>() {
-                        @Override
-                        public void onChanged(@Nullable ResultType newData) {
-                            setValue(Resource.error(response.errorMessage, newData));
-                        }
-                    });
-                }
+                });
+            } else {
+                onFetchFailed();
+                result.addSource(dbSource, newData -> setValue(Resource.error(response.errorMessage, newData)));
             }
         });
     }

@@ -60,11 +60,7 @@ public class MoviesContentProvider extends AutoContentProvider {
     private final int VIDEOS = 5;
 
     public MoviesContentProvider() {
-        super(HELPER, new Logger("Movies"), new SupportSQLiteOpenHelperFactoryProvider() {
-            public SupportSQLiteOpenHelper.Factory createFactory(Context ctx) {
-                return new FrameworkSQLiteOpenHelperFactory();
-            }
-        });
+        super(HELPER, new Logger("Movies"), ctx -> new FrameworkSQLiteOpenHelperFactory());
         matcher = new UriMatcher(UriMatcher.NO_MATCH);
         matcher.addURI(AUTHORITY, MoviesDef.MOVIES_BULK_INSERT_WITH_RESET_FLAG + "/#", MOVIES_BULK_INSERT_WITH_RESET_FLAG);
         matcher.addURI(AUTHORITY, MovieDetailsDef.TABLE_NAME, MOVIE_DETAILS);

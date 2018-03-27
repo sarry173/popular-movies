@@ -12,11 +12,8 @@
 package pl.selvin.android.popularmovies;
 
 
-import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -29,14 +26,10 @@ import android.view.MenuItem;
 import android.view.View;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import pl.selvin.android.popularmovies.adapters.MoviesAdapter;
-import pl.selvin.android.popularmovies.models.Movie;
-import pl.selvin.android.popularmovies.models.Resource;
-import pl.selvin.android.popularmovies.models.Status;
 import pl.selvin.android.popularmovies.viewmodels.MoviesListViewModel;
 import pl.selvin.android.popularmovies.viewmodels.MoviesListViewModel.MoviesToShow;
 
@@ -63,36 +56,30 @@ public class MoviesListActivity extends AppCompatActivity implements MoviesAdapt
         ButterKnife.bind(this);
         setSupportActionBar(toolbar);
         model = ViewModelProviders.of(this).get(MoviesListViewModel.class);
-        bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                return onOptionsItemSelected(item);
-            }
-        });
+        bottomNavigationView.setOnNavigationItemSelectedListener(this::onOptionsItemSelected);
         recyclerView.setLayoutManager(new GridLayoutManager(MoviesListActivity.this, getResources().getInteger(R.integer.movies_span_count)));
-        final MoviesAdapter adapter = new MoviesAdapter(MoviesListActivity.this, new ArrayList<Movie>(), MoviesListActivity.this);
+        final MoviesAdapter adapter = new MoviesAdapter(MoviesListActivity.this, new ArrayList<>(), MoviesListActivity.this);
         recyclerView.setAdapter(adapter);
-        model.movies.observe(this, new Observer<Resource<List<Movie>>>() {
-            @Override
-            public void onChanged(@Nullable Resource<List<Movie>> moviesData) {
-                if (moviesData != null) {
-                    if (moviesData.data != null) {
-                        adapter.setMovies(moviesData.data);
-                    }
-                    if (moviesData.status == Status.SUCCESS) {
-                        progress.setVisibility(View.GONE);
-                    } else if (moviesData.status == Status.ERROR) {
-                        progress.setVisibility(View.GONE);
+        model.movies.observe(this, moviesData -> {
+            if (moviesData != null) {
+                if (moviesData.data != null) {
+                    adapter.setMovies(moviesData.data);
+                }
+                switch (moviesData.status) {
+                    case ERROR:
                         Snackbar.make(coordinatorLayout, moviesData.message != null ? moviesData.message : "An error appear", Snackbar.LENGTH_SHORT)
                                 .show();
-                    } else {
+                    case SUCCESS:
+                        progress.setVisibility(View.GONE);
+                        break;
+                    default:
                         if (moviesData.data == null) {
                             progress.setVisibility(View.VISIBLE);
                         }
-                    }
-                } else {
-                    progress.setVisibility(View.VISIBLE);
+                        break;
                 }
+            } else {
+                progress.setVisibility(View.VISIBLE);
             }
         });
     }

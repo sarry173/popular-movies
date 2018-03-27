@@ -120,6 +120,7 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.Holder> {
             Picasso.get().load(IMAGE_BASE_URL_SIZED + movie.getBackdropPath()).priority(Picasso.Priority.LOW).fetch();
         }
 
+        @SuppressWarnings("unused")
         @OnClick(R.id.movies_list_item_decorator)
         void onClick(View unused) {
             mListener.onItemClick(this);
